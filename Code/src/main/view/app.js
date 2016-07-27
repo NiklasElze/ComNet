@@ -27,9 +27,9 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         'abstract': true,
         resolve: {
             authorize: ['authorizationService',
-              function (authorizationService) {
-                  return authorizationService.authorize();
-              }
+                function (authorizationService) {
+                    return authorizationService.authorize();
+                }
             ]
         }
     }).state('logout', {
@@ -48,7 +48,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'site',
         url: '/login',
         data: {
-            roles: [1]
+            roles: []
         },
         views: {
             'content@': {
@@ -60,7 +60,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'site',
         url: '/main',
         data: {
-            roles: [1]
+            roles: ['user']
         },
         views: {
             'content@': {
@@ -76,7 +76,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/home',
         data: {
-            roles: [1]
+            roles: ['user']
         },
         views: {
             'main-content': {
@@ -88,7 +88,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/messages',
         data: {
-            roles: [1]
+            roles: ['user']
         },
         views: {
             'main-content': {
@@ -100,7 +100,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/administration',
         data: {
-            roles: [2, 3]
+            roles: ['user']
         },
         views: {
             'main-content': {
@@ -116,7 +116,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/overview',
         data: {
-            roles: [2, 3]
+            roles: ['user']
         },
         views: {
             'administration-content': {
@@ -128,7 +128,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/seminargroup',
         data: {
-            roles: [3]
+            roles: ['user']
         },
         params: {
             id: 0,
@@ -145,7 +145,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/user',
         data: {
-            roles: [2, 3]
+            roles: ['user']
         },
         params: {
             id: 0,
