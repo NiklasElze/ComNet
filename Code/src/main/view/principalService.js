@@ -1,7 +1,7 @@
 ﻿function principalService($q, $http, $timeout) {
     var _identity = undefined,
       _authenticated = false,
-        _credentials = null
+        _credentials = null;
 
     return {
         isIdentityResolved: function() {
@@ -11,15 +11,14 @@
             return _authenticated;
         },
         hasRole: function(id) {
-            //return userHasRole(id);
-            return true;
+            return userHasRole(id);
         },
         isInAnyRole: function(roles) {
-            if (!_authenticated || !_identity.roles) return false;
+            if (!_authenticated || !_identity.privileges) return false;
 
-            /*for (var i = 0; i < roles.length; i++) {
-                if (this.userHasRole(roles[i])) return true;
-            }*/
+            for (var i = 0; i < roles.length; i++) {
+                if (userHasRole(roles[i])) return true;
+            }
 
             return false;
         },

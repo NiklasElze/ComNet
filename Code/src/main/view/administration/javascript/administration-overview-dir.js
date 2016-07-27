@@ -15,25 +15,33 @@ function administrationOverviewController($scope, myHttpService, navMenuService)
 
     function initialize() {
         navMenuService.setToActive('administration');
+        $scope.userIsAdmin = $scope.$parent.userIsAdmin;
+        $scope.userIsPersonInAuthority = $scope.$parent.userIsPersonInAuthority;
         startLoading();
-        
-        myHttpService
-            .getSeminarGroups()
-            .then(function (seminarGroups) {
-                resolveSeminarGroups(seminarGroups);
-            }, function (errorMessage) {
-                showErrorMessage(errorMessage);
-            });
 
-        myHttpService
-            .getCustodians()
-            .then(function (custodians) {
-                setCustodians(custodians);
-                stopLoading();
-            }, function (errorMessage) {
-                showErrorMessage(errorMessage);
-                stopLoading();
-            });
+        if ($scope.userIsPersonInAuthority) {
+            myHttpService
+                .getSeminarGroups()
+                .then(function (seminarGroups) {
+                    resolveSeminarGroups(seminarGroups);
+                    stopLoading();
+                }, function (errorMessage) {
+                    showErrorMessage(errorMessage);
+                    stopLoading();
+                });
+        }
+
+        if ($scope.userIsAdmin) {
+            myHttpService
+                .getCustodians()
+                .then(function (custodians) {
+                    setCustodians(custodians);
+                    stopLoading();
+                }, function (errorMessage) {
+                    showErrorMessage(errorMessage);
+                    stopLoading();
+                });
+        }
     }
 
     function loadSeminarGroups() {

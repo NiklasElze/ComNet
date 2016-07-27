@@ -1,11 +1,16 @@
 package model;
 
+import common.JsonService;
+import common.interfaces.JsonConvertable;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
 @Table(name = "tconversation", schema = "", catalog = "comnetdb")
-public class Conversation {
+public class Conversation implements JsonConvertable{
     private int id;
     private Student author;
     private Collection<Student> members;
@@ -68,5 +73,14 @@ public class Conversation {
 
     public void setMessages(Collection<Message> messages) {
         this.messages = messages;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        return Json.createObjectBuilder()
+                .add("id", id)
+                .add("author", author.toJson())
+                .add("members", JsonService.getListAsJsonArray(members))
+                .build();
     }
 }

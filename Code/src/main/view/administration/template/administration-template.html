@@ -8,9 +8,9 @@
         </div>
         <div class="col-lg-8" style="padding-top: 3px">
             <ol class="breadcrumb" style="margin-bottom: 0; float: right">
-                <li><a href="" ng-click="administrationCtrl.addUser()"><span class="glyphicon glyphicon-plus"></span> Add custodian</a></li>
-                <li><a href="" ng-click="administrationCtrl.addStudent()"><span class="glyphicon glyphicon-plus"></span> Add student</a></li>
-                <li><a href="" ng-click="administrationCtrl.addSeminarGroup()"><span class="glyphicon glyphicon-plus"></span> Add seminar group</a></li>
+                <li  ng-show="userIsAdmin"><a href="" ng-click="administrationCtrl.addUser()"><span class="glyphicon glyphicon-plus"></span> Add custodian</a></li>
+                <li ng-show="userIsPersonInAuthority"><a href="" ng-click="administrationCtrl.addStudent()" ng-show="userIsPersonInAuthority"><span class="glyphicon glyphicon-plus"></span> Add student</a></li>
+                <li ng-show="userIsPersonInAuthority"><a href="" ng-click="administrationCtrl.addSeminarGroup()"><span class="glyphicon glyphicon-plus"></span> Add seminar group</a></li>
             </ol>
         </div>
     </div>

@@ -1,4 +1,4 @@
-﻿function navMenuController($scope,$state, navMenuService) {
+﻿function navMenuController($scope,$state, navMenuService, principalService) {
     var that = this;
 
     that.activeElement = 'li_home';
@@ -9,6 +9,8 @@
 
     function initialize() {
         navMenuService.navMenuController.set(that);
+        $scope.userIsStudent = principalService.hasRole(1);
+        $scope.userIsCustodian = principalService.hasRole(2) || principalService.hasRole(3);
     }
 
     function goTo(target) {
@@ -39,7 +41,7 @@ function navMenuDirective() {
             show: '=?'
         },
         templateUrl: 'nav-menu/template/navmenu-template.html',
-        controller: ['$scope', '$state', 'navMenuService', navMenuController],
+        controller: ['$scope', '$state', 'navMenuService', 'principalService', navMenuController],
         controllerAs: 'menuCtrl'
     }
 }

@@ -60,7 +60,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'site',
         url: '/main',
         data: {
-            roles: ['user']
+            roles: [1, 2, 3]
         },
         views: {
             'content@': {
@@ -76,7 +76,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/home',
         data: {
-            roles: ['user']
+            roles: [1]
         },
         views: {
             'main-content': {
@@ -88,7 +88,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/messages',
         data: {
-            roles: ['user']
+            roles: [1]
         },
         views: {
             'main-content': {
@@ -100,7 +100,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main',
         url: '/administration',
         data: {
-            roles: ['user']
+            roles: [2, 3]
         },
         views: {
             'main-content': {
@@ -116,7 +116,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/overview',
         data: {
-            roles: ['user']
+            roles: [2, 3]
         },
         views: {
             'administration-content': {
@@ -128,7 +128,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/seminargroup',
         data: {
-            roles: ['user']
+            roles: [3]
         },
         params: {
             id: 0,
@@ -145,7 +145,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         parent: 'main.administration',
         url: '/user',
         data: {
-            roles: ['user']
+            roles: [2, 3]
         },
         params: {
             id: 0,
@@ -174,6 +174,11 @@ function appRun($rootScope, $state, $stateParams, $timeout, authorizationService
             $timeout(function () {
                 authorizationService.authorize();
             }, 300);
+        } else if (authenticated && toState.name !== 'login' && toState.name !== 'logout'){
+            if (!authorizationService.isAuthorized()){
+                event.preventDefault();
+                $state.go('main.administration.overview');
+            }
         }
     });
 }

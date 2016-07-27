@@ -1,4 +1,4 @@
-﻿function administrationController($scope, $state) {
+﻿function administrationController($scope, $state, principalService) {
     var that = this;
     that.addSeminarGroup = addSeminarGroup;
     that.addStudent = addStudent;
@@ -8,6 +8,8 @@
     initialize();
 
     function initialize() {
+        $scope.userIsAdmin = principalService.hasRole(2);
+        $scope.userIsPersonInAuthority = principalService.hasRole(3);
     }
 
     function addSeminarGroup() {
@@ -50,7 +52,7 @@ function administrationDirective() {
             userIsAdmin: '=?',
             userIsPersonInAuthority: '=?'
         },
-        controller: ['$scope', '$state', administrationController],
+        controller: ['$scope', '$state', 'principalService', administrationController],
         controllerAs: 'administrationCtrl',
         templateUrl: 'administration/template/administration-template.html'
     }

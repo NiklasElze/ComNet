@@ -10,7 +10,7 @@
     {{ errorMessage }}
 </div>
 <div class="col-lg-12" style="padding: 0">
-    <div class="panel panel-default">
+    <div class="panel panel-default" ng-show="userIsAdmin">
         <div class="panel-heading">
             Custodians
         </div>
@@ -22,7 +22,7 @@
             </div>
         </div>
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" ng-show="userIsPersonInAuthority">
         <div class="panel-heading">
             Students
         </div>
