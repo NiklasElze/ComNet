@@ -1,0 +1,42 @@
+﻿<div class="col-lg-12">
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px" />
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="editSeminarGroupCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="editSeminarGroupCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+        {{ errorMessage }}
+    </div>
+    <div ng-show="showContent" class="panel panel-default col-lg-12">
+        <div class="col-lg-12" style="margin: 5px">
+            <div class="col-lg-2">
+                <div>
+                    Name:
+                </div>
+            </div>
+            <div>
+                <input type="text" ng-model="name" ng-disabled="loading"/>
+            </div>
+        </div>
+        <div class="col-lg-12">
+            <div class="col-lg-2">
+                <div>
+                    Belongs to:
+                </div>
+            </div>
+            <div class="col-lg-10">
+                <select ng-options="seminargroup.name for seminargroup in seminarGroups | orderBy: orderFunction track by seminargroup.id"
+                        ng-model="selectedSeminarGroup" ng-disabled="loading"></select>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <button class="btn btn-default" ng-click="editSeminarGroupCtrl.cancel()" ng-disabled="loading">Back</button>
+        <button class="btn btn-primary" ng-click="editSeminarGroupCtrl.save()" ng-disabled="loading" ng-show="showSave">Save</button>
+        <button class="btn btn-danger" ng-click="editSeminarGroupCtrl.delete()" ng-disabled="loading" ng-show="showDelete"><span class="glyphicon glyphicon-trash" ng-disabled="requestInProgress"></span> Delete</button>
+        <button class="btn btn-primary" ng-disabled="loading" ng-click="editSeminarGroupCtrl.initializeNew()" ng-show="showInitialize" style="margin-right: 5px"><span class="glyphicon glyphicon-plus"></span> New seminar group</button>
+    </div>
+</div>

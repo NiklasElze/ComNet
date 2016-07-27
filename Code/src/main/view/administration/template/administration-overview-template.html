@@ -1,0 +1,37 @@
+﻿<div ng-show="loading">
+    <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
+</div>
+<div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+    <button type="button" class="close" ng-click="administrationOverviewCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+    {{ info }}
+</div>
+<div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+    <button type="button" class="close" ng-click="administrationOverviewCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+    {{ errorMessage }}
+</div>
+<div class="col-lg-12" style="padding: 0">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Custodians
+        </div>
+        <div class="panel-body">
+            <div ng-repeat="custodian in custodians | orderBy: 'lastname'">
+                <div class="col-lg-3" style="padding: 0">
+                    <custodian data="custodian"></custodian>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            Students
+        </div>
+        <div class="panel-body">
+            <div ng-repeat="seminarGroup in seminarGroups | orderBy: 'name'">
+                <div class="col-lg-3" style="padding: 0">
+                    <seminar-group data="seminarGroup"></seminar-group>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

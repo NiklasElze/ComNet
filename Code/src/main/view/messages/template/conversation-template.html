@@ -1,0 +1,26 @@
+﻿<div ng-show="showConversation">
+    <div class="col-lg-12">
+        <div class="list-group">
+            <a class="list-group-item"><div style="height: 50px">{{ conversationHeader }}</div></a>
+        </div>
+    </div>
+    <div class="col-lg-12 list-group">
+        <div ng-repeat="message in messages">
+            <conversation-message data="message"></conversation-message>
+        </div>
+    </div>
+    <div>
+        <div class="col-lg-8">
+                <textarea name="Text1" cols="40" rows="5"
+                          ng-model="message"
+                          ng-keypress="conversationCtrl.autoExpand($event)"
+                          ng-keyup="conversationCtrl.autoExpand($event)"
+                          style="padding-top: 15px; padding-left:15px; padding-right: 15px;
+                                 width: 100%; height: 50px; max-height: 200px; resize: none; overflow: hidden"
+                          placeholder="..."></textarea>
+        </div>
+        <div>
+            <button class="btn btn-default" ng-click="conversationCtrl.sendMessage()">Send</button>
+        </div>
+    </div>
+</div>

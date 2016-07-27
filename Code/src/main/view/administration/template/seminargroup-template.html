@@ -1,0 +1,25 @@
+﻿<div style="padding: 0">
+    <div class="well col-lg-12" style="padding: 0; margin-bottom: 0; padding: 4px">
+        <div class="col-lg-7">
+            <div class="col-lg-12">
+                {{ name }}
+            </div>
+        </div>
+        <div class="col-lg-5" style="padding-right: 0; padding-left: 22px">
+            <a href="" ng-click="seminarGroupCtrl.expand()" ng-show="!showStudents" style="margin-right: 7px"><span class="glyphicon glyphicon-menu-down"></span></a>
+            <a href="" ng-click="seminarGroupCtrl.collapse()" ng-show="showStudents" style="margin-right: 7px"><span class="glyphicon glyphicon-menu-up"></span></a>
+            <a href="" ng-click="seminarGroupCtrl.load()" style="margin-right: 7px"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a href=""ng-click="seminarGroupCtrl.delete()"><span class="glyphicon glyphicon-trash"></span></a>
+        </div>
+    </div>
+    <div class="list-group" style="padding: 0">
+        <div ng-show="showStudents">
+            <div ng-repeat="student in students | orderBy: 'lastname'">
+                <student data="student"></student>
+            </div>
+        </div>
+        <div ng-repeat="subGroup in subGroups | orderBy: 'name'">
+            <seminar-group data="subGroup"></seminar-group>
+        </div>
+    </div>
+</div>

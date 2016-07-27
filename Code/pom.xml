@@ -105,7 +105,7 @@
 
     </dependencies>
     <build>
-        <finalName>stack</finalName>
+        <finalName>ComNet</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -129,5 +129,5 @@
             </plugins>
         </pluginManagement>
     </build>
-    <name>Stack</name>
+    <name>ComNet</name>
 </project>
