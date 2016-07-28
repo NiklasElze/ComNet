@@ -34,7 +34,7 @@ public class Conversation {
     @Produces("application/json")
     public Response getConversationsOfStudent(@PathParam("id") int studentId, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[]{Role.PERSON_IN_AUTHORITY},
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
             List<model.Conversation> conversations = m_ConversationService.getConversationsOfStudent(studentId);
@@ -65,23 +65,94 @@ public class Conversation {
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response getConversationById(@PathParam("id") int conversationId){
-        return null;
+    public Response getConversationById(@PathParam("id") int conversationId, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            List<model.Conversation> conversations = m_ConversationService.getConversationsOfStudent(conversationId);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(JsonService.getListAsJsonArray(conversations))
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
     }
 
-    @DELETE
+    @POST
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response deleteConversation(int conversationId){
-        return null;
+    public Response getConversationByMembers(List<Integer> memberIds, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            model.Conversation conversation = m_ConversationService.getConversationByMembers(memberIds);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(conversation.toJson())
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
     }
 
     @PUT
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response addConversation(ConversationPushModel model){
-        return null;
+    public Response addOrUpdateConversation(ConversationPushModel model, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            m_ConversationService.addOrUpdateConversation(model);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
     }
 }

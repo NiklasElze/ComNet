@@ -31,6 +31,48 @@ public class ConversationService implements IConversationService{
     }
 
     @Override
+    public Conversation getConversationByMembers(List<Integer> memberIds) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+
+            try{
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+
+                List<Student> members = new ArrayList<>();
+
+                for (int memberId : memberIds){
+                    Student member = studentRepository.getById(memberId);
+
+                    if (member == null){
+                        throw new ServiceException(ErrorType.MEMBER_NOT_FOUND);
+                    }
+
+                    members.add(member);
+                }
+
+                return conversationRepository.getByMembers(members);
+            }
+            catch (Exception exception){
+                throw new ServiceException(ErrorType.INTERNAL_ERROR);
+            }
+        }
+    }
+
+    @Override
+    public Conversation getConversationById(int id) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+
+            try{
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+
+                return conversationRepository.getById(id);
+            }catch (Exception exception){
+                throw new ServiceException(ErrorType.INTERNAL_ERROR);
+            }
+        }
+    }
+
+    @Override
     public void addOrUpdateConversation(ConversationPushModel model) throws ServiceException {
         try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){

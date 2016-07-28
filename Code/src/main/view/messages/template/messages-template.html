@@ -1,17 +1,20 @@
 ﻿<div>
     <div class="panel panel-default">
-        <div class="panel-heading">
-            <div>Conversations
+        <div class="panel-heading col-lg-12">
+            <div class="col-lg-4">
+                <ol class="breadcrumb" style="margin-bottom: 0; float: left">
+                    <li style="font-size: 1.2em"><b>Conversations</b></li>
+                    <li><a href="" ng-click="messagesCtrl.goToOverview()">Overview</a></li>
+                </ol>
             </div>
-            <!--<div style="text-align: right">
-                <a href="" ng-show="showGoBack" ng-click="messagesCtrl.goBack()">Back</a>
-                <a href="" ng-show="showGoForward" ng-click="messagesCtrl.goForward()">Forward</a>
-            </div>-->
+            <div class="col-lg-8" style="padding-top: 3px">
+                <ol class="breadcrumb" style="margin-bottom: 0; float: right">
+                    <li><a href="" ng-click="messagesCtrl.newConversation()"><span class="glyphicon glyphicon-plus"></span> New conversation</a></li>
+                </ol>
+            </div>
         </div>
         <div class="panel-body" style="padding: 0px">
-            <!--<new-conversation></new-conversation>-->
             <conversation-overview></conversation-overview>
-            <!--<conversation></conversation>-->
         </div>
     </div>
 </div>
