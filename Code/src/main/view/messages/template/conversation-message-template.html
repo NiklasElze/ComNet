@@ -1,17 +1,17 @@
-﻿<div class="list-group-item">
-    <div>
+﻿<div class="list-group-item col-lg-12" style="padding-left: 0; padding-right: 0">
+    <div class="col-lg-12">
         <div style="float:left">
-            <label ng-show="showSenderName">
-                {{ sender.name }}
+            <label>
+                {{ firstname }} {{ lastname }} {{ seminarGroup }}
             </label>
         </div>
         <div style="float: right">
             <label>
-                {{ createDate }}
+                {{ createDate | date:'dd.MM.yyyy HH:mm:ss'}}
             </label>
         </div>
     </div>
-    <div>
-        {{ text }}
+    <div class="col-lg-12">
+        <div style="white-space: pre-wrap; word-break: break-all; display: block">{{ text }}</div>
     </div>
 </div>

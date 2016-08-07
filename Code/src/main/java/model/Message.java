@@ -1,11 +1,15 @@
 package model;
 
+import common.interfaces.JsonConvertable;
+
+import javax.json.Json;
+import javax.json.JsonObject;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
 @Table(name = "tmessage", schema = "", catalog = "comnetdb")
-public class Message {
+public class Message implements JsonConvertable, Comparable<Message>{
     private int id;
     private String text;
     private Timestamp createDate;
@@ -84,5 +88,28 @@ public class Message {
 
     public void setConversation(Conversation conversation) {
         this.conversation = conversation;
+    }
+
+    @Override
+    public JsonObject toJson() {
+        return Json.createObjectBuilder()
+                .add("id", id)
+                .add("text", text)
+                .add("createDate", createDate.getTime())
+                .add("sender", sender.toJson())
+                .build();
+    }
+
+    @Override
+    public int compareTo(Message that) {
+        if (this.getId() < that.getId()){
+            return -1;
+        }
+
+        if (this.getId() > that.getId()){
+            return 1;
+        }
+
+        return 0;
     }
 }

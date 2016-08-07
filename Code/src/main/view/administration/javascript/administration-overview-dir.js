@@ -1,6 +1,6 @@
 ﻿'use strict';
 
-function administrationOverviewController($scope, myHttpService, navMenuService) {
+function administrationOverviewController($scope, seminarGroupService, myHttpService, navMenuService) {
     var that = this;
     that.showInfo = showInfo;
     that.showErrorMessage = showErrorMessage;
@@ -23,7 +23,7 @@ function administrationOverviewController($scope, myHttpService, navMenuService)
             myHttpService
                 .getSeminarGroups()
                 .then(function (seminarGroups) {
-                    resolveSeminarGroups(seminarGroups);
+                    $scope.seminarGroups = seminarGroupService.orderGroups(seminarGroups);
                     stopLoading();
                 }, function (errorMessage) {
                     showErrorMessage(errorMessage);
@@ -97,62 +97,6 @@ function administrationOverviewController($scope, myHttpService, navMenuService)
     function stopLoading() {
         $scope.loading = false;
     }
-
-    function resolveSeminarGroups(seminarGroups) {
-        var orderedGroups = [];
-        var groupsToRemove = [];
-
-        angular.forEach(seminarGroups, function (seminarGroup) {
-            seminarGroup.subGroups = [];
-
-            if (seminarGroup.fatherGroup) {
-                seminarGroup.fatherGroup.subGroups = [];
-            }
-
-            orderedGroups.push(seminarGroup);
-        });
-
-        angular.forEach(seminarGroups, function (seminarGroup) {
-            
-            if (seminarGroup.fatherGroup) {
-                var indexOfFatherGroup = indexOfGroup(orderedGroups, seminarGroup.fatherGroup);
-
-                orderedGroups[indexOfFatherGroup].subGroups.push(seminarGroup);
-
-                groupsToRemove.push(seminarGroup);
-            }
-        });
-
-        angular.forEach(groupsToRemove, function (seminarGroup) {
-            var index = indexOfGroup(orderedGroups, seminarGroup);
-
-            orderedGroups.splice(index, 1);
-        });
-
-        $scope.seminarGroups = orderedGroups;
-    }
-
-    function indexOfGroup(groups, group) {
-        var index = 0;
-        var returnIndex = false;
-
-        angular.forEach(groups, function (seminarGroup) {
-            if (seminarGroup.id === group.id) {
-                returnIndex = true;
-            }
-
-            if (!returnIndex) {
-                index++;
-            }
-        });
-
-        if (returnIndex) {
-            return index;
-        }
-        else {
-            return -1;
-        }
-    }
 }
 
 function administrationOverviewDirective() {
@@ -161,7 +105,7 @@ function administrationOverviewDirective() {
         scope: {
             seminarGroups: '=?'
         },
-        controller: ['$scope', 'myHttpService', 'navMenuService', administrationOverviewController],
+        controller: ['$scope', 'seminarGroupService', 'myHttpService', 'navMenuService', administrationOverviewController],
         controllerAs: 'administrationOverviewCtrl',
         templateUrl: 'administration/template/administration-overview-template.html'
     }

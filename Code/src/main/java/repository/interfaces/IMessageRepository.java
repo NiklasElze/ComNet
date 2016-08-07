@@ -8,6 +8,7 @@ public interface IMessageRepository {
 
     Message getById(int id);
 
+    List<Message> getByConversationId(int id);
     List<Message> getByStudentId(int id);
 
     void add(Message message);

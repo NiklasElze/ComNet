@@ -20,25 +20,25 @@
             }
 
             return principalService.identity(force)
-              .then(function () {
+                .then(function () {
                     var toState = $rootScope.toState.name;
-                  var isAuthenticated = principalService.isAuthenticated();
+                    var isAuthenticated = principalService.isAuthenticated();
 
-                  if ($rootScope.toState.data.roles
-                      && $rootScope.toState
-                                   .data.roles.length > 0
-                      && !principalService.isInAnyRole(
-                         $rootScope.toState.data.roles)) {
-                      if (isAuthenticated) {
-                          $state.go('main.administration.overview');
-                      } else {
-                          $rootScope.returnToState = $rootScope.toState;
-                          $rootScope.returnToStateParams = $rootScope.toStateParams;
+                    if ($rootScope.toState.data.roles
+                        && $rootScope.toState
+                            .data.roles.length > 0
+                        && !principalService.isInAnyRole(
+                            $rootScope.toState.data.roles)) {
+                        if (isAuthenticated) {
+                            $state.go('main.administration.overview');
+                        } else {
+                            $rootScope.returnToState = $rootScope.toState;
+                            $rootScope.returnToStateParams = $rootScope.toStateParams;
 
-                          $state.go('login');
-                      }
-                  }
-              });
+                            $state.go('login');
+                        }
+                    }
+                });
         }
     };
 }

@@ -70,11 +70,11 @@ public class Conversation {
             SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            List<model.Conversation> conversations = m_ConversationService.getConversationsOfStudent(conversationId);
+            model.Conversation conversation = m_ConversationService.getConversationById(conversationId);
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
-                    .entity(JsonService.getListAsJsonArray(conversations))
+                    .entity(conversation.toJson())
                     .build();
         }
         catch (ServiceException serviceException){

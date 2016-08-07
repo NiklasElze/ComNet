@@ -1,17 +1,28 @@
-﻿<a href="" class="list-group-item col-lg-12" ng-click="conversationOverviewEntryCtrl.loadConversation(id)">
+﻿<div class="list-group-item col-lg-12"
+     ng-click="conversationOverviewEntryCtrl.loadConversation()">
     <div style="height: 50px">
         <div>
-            <div class="col-lg-2">
-                Conversation {{ id }}
-            </div>
-            <div class="col-lg-10">
-                Members: 
-                <div ng-repeat="member in members">
-                    <div class="col-lg-4" style="margin: 0; padding: 0">
-                        <member-item data="member" service="" showRemove="false"></member-item>
+            <div class="col-lg-6">
+                <div class="col-lg-12" style="padding: 4px; margin-bottom: 10px">
+                    <b>Members: {{ members.length }}</b>
+                </div>
+                <div class="col-lg-12"
+                     style="height: 6.5em; overflow-y: scroll; overflow-x: hidden; padding: 0; border: 1px solid #ddd">
+                    <div ng-repeat="member in members">
+                        <div class="col-lg-12" style="margin: 0; padding: 0">
+                            <member-item data="member"></member-item>
+                        </div>
                     </div>
+                </div>
+            </div>
+            <div class="col-lg-6" ng-show="showLastMessage" style="float: right">
+                <div class="col-lg-12" style="padding: 0">
+                    Last message: {{ lastMessageDate | date:'dd.MM.yyyy HH:mm:ss'}}
+                </div>
+                <div class="col-lg-12" style="padding: 0; text-overflow: ellipsis">
+                    {{ lastMessage }}
                 </div>
             </div>
         </div>
     </div>
-</a>
+</div>

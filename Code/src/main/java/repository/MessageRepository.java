@@ -26,6 +26,14 @@ public class MessageRepository implements IMessageRepository {
     }
 
     @Override
+    public List<Message> getByConversationId(int id) {
+        Query query = m_EntityManager.createQuery("select m from Message m where m.conversation.id = :id");
+        query.setParameter("id", id);
+
+        return query.getResultList();
+    }
+
+    @Override
     public List<Message> getByStudentId(int id) {
         Query query = m_EntityManager.createQuery("select m from Message m where m.sender.userdata.id = :senderId");
         query.setParameter("senderId", id);

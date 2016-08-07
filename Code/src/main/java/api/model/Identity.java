@@ -12,11 +12,20 @@ import java.util.List;
 
 public class Identity {
 
+    private int id;
     private String firstname;
     private String lastname;
     private String sessionId;
     private SeminarGroup seminarGroup;
     private List<Privilege> privileges;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public void setFirstname(String firstname) {
         this.firstname = firstname;
@@ -40,6 +49,7 @@ public class Identity {
 
     public JsonObject toJson(){
         JsonObjectBuilder jsonBuilder = Json.createObjectBuilder()
+                .add("id", id)
                 .add("firstname", firstname)
                 .add("lastname", lastname)
                 .add("sessionId", sessionId);

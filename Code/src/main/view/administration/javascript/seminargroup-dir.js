@@ -99,8 +99,6 @@ function seminarGroupController($scope, $state, myHttpService) {
 }
 
 function seminarGroupDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         require: '^administrationOverview',

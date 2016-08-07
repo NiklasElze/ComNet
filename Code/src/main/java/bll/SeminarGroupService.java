@@ -3,13 +3,81 @@ package bll;
 import api.model.SeminarGroupPushModel;
 import bll.interfaces.ISeminarGroupService;
 import common.*;
+import model.Conversation;
 import model.SeminarGroup;
+import model.Student;
+import repository.ConversationRepository;
 import repository.SeminarGroupRepository;
+import repository.StudentRepository;
+import repository.interfaces.IConversationRepository;
 import repository.interfaces.ISeminarGroupRepository;
+import repository.interfaces.IStudentRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeminarGroupService implements ISeminarGroupService {
+
+    @Override
+    public List<SeminarGroup> getContactListOfNewConversation(int currentUserId) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+
+            try{
+                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+
+                Student student = studentRepository.getById(currentUserId);
+
+                if (student == null){
+                    throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
+                }
+
+                List<SeminarGroup> seminarGroups = seminarGroupRepository.getAll();
+
+                List<Student> students = new ArrayList<>();
+                students.add(student);
+
+                excludeStudentsFromSeminarGroups(seminarGroups, students);
+
+                return seminarGroups;
+            }
+            catch (ServiceException exception){
+                throw exception;
+            }
+            catch (Exception exception){
+                throw new ServiceException(ErrorType.INTERNAL_ERROR);
+            }
+        }
+    }
+
+    @Override
+    public List<SeminarGroup> getContactListOfConversation(int conversationId) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+
+            try{
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+
+                Conversation conversation = conversationRepository.getById(conversationId);
+
+                if (conversation == null){
+                    throw new ServiceException(ErrorType.CONVERSATION_NOT_FOUND);
+                }
+
+                List<SeminarGroup> seminarGroups = seminarGroupRepository.getAll();
+
+                excludeStudentsFromSeminarGroups(seminarGroups, (List<Student>) conversation.getMembers());
+
+                return seminarGroups;
+            }
+            catch (ServiceException exception){
+                throw exception;
+            }
+            catch (Exception exception){
+                throw new ServiceException(ErrorType.INTERNAL_ERROR);
+            }
+        }
+    }
 
     @Override
     public List<SeminarGroup> getSeminarGroupList() throws ServiceException {
@@ -121,5 +189,19 @@ public class SeminarGroupService implements ISeminarGroupService {
 
         existingGroup.setFatherGroup(fatherGroup);
         existingGroup.setName(model.getName());
+    }
+
+    private void excludeStudentsFromSeminarGroups(List<SeminarGroup> seminarGroups, List<Student> studentsToExclude){
+        for (SeminarGroup seminarGroup : seminarGroups){
+            List<Student> students = new ArrayList<>();
+
+            for (Student student : seminarGroup.getStudents()){
+                if (!studentsToExclude.contains(student)){
+                    students.add(student);
+                }
+            }
+
+            seminarGroup.setStudents(students);
+        }
     }
 }

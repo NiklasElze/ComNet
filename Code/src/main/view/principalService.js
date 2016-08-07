@@ -1,20 +1,22 @@
-﻿function principalService($q, $http, $timeout) {
-    var _identity = undefined,
-      _authenticated = false,
+﻿function principalService($q, $http, $localStorage) {
+    var _authenticated = false,
         _credentials = null;
 
     return {
-        isIdentityResolved: function() {
-            return angular.isDefined(_identity);
-        },
         isAuthenticated: function() {
+            if (!_authenticated && $localStorage.identity){
+                _authenticated = true;
+            }
+
             return _authenticated;
         },
         hasRole: function(id) {
             return userHasRole(id);
         },
         isInAnyRole: function(roles) {
-            if (!_authenticated || !_identity.privileges) return false;
+            if (!_authenticated || !$localStorage.identity.privileges){
+                return false;
+            }
 
             for (var i = 0; i < roles.length; i++) {
                 if (userHasRole(roles[i])) return true;
@@ -27,19 +29,22 @@
             _authenticated = false;
         },
         getIdentity: function(){
-            return _identity;
+            return $localStorage.identity;
         },
         setIdentity: function(data){
-            _identity = data;
+            $localStorage.identity = data;
             _authenticated = data != null;
         },
         identity: function(force) {
-            var deferred = $q.defer(_identity);
+            var deferred = $q.defer($localStorage.identity);
 
-            if (force === true) _identity = undefined;
+            if (force === true){
+                $localStorage.identity = undefined;
+            }
 
-            if (_identity != null && angular.isDefined(_identity)) {
-                deferred.resolve(_identity);
+            if ($localStorage.identity != null && angular.isDefined($localStorage.identity)){
+                _authenticated = true;
+                deferred.resolve($localStorage.identity);
 
                 return deferred.promise;
             }
@@ -53,17 +58,17 @@
                     },
                     data: _credentials
                 }).then(function successCallback(response) {
-                    _identity = response.data;
+                    $localStorage.identity = response.data;
                     _authenticated = true;
-                    deferred.resolve(_identity);
+                    deferred.resolve($localStorage.identity);
                 }, function errorCallback(response) {
-                    _identity = null;
+                    $localStorage.identity = null;
                     _authenticated = false;
-                    deferred.resolve(_identity);
+                    deferred.resolve($localStorage.identity);
                 });
             }
             else {
-                deferred.resolve(_identity);
+                deferred.resolve($localStorage.identity);
             }
 
             return deferred.promise;
@@ -73,7 +78,7 @@
     function userHasRole(id){
         var hasRole = false;
 
-        angular.forEach(_identity.privileges, function(privilege){
+        angular.forEach($localStorage.identity.privileges, function(privilege){
             if (privilege.id === id){
                 hasRole = true;
             }
@@ -83,4 +88,4 @@
     }
 }
 
-angular.module('ComNet').factory('principalService', ['$q', '$http', '$timeout', principalService]);
+angular.module('ComNet').factory('principalService', ['$q', '$http', '$localStorage', principalService]);

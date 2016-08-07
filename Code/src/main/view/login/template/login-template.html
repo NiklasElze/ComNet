@@ -1,20 +1,21 @@
-﻿<img src="src/img/de-flag.png" ng-click="loginCtrl.changeLanguage('false')"/>
-<img src="src/img/flag-en.png" ng-click="loginCtrl.changeLanguage('true')" />
-<div class="col-lg-4" style="margin-top: 10px" ng-disabled="loginInProcess">
+﻿<div class="col-lg-4" style="margin-top: 10px">
     <div class="panel panel-primary">
         <div class="panel-heading">
             <h3 class="panel-title">Login</h3>
         </div>
-        <div class="panel-body">
-            <div ng-show="showErrorMessage">
+        <div class="panel-body" style="padding-top: 0px">
+            <div ng-show="loading">
+                <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
+            </div>
+            <div ng-show="showErrorMessage" style="padding-top: 10px">
                 {{ errorMessage }}
             </div>
-            <div>
+            <div style="padding-top: 10px">
                 <div class="col-lg-3">
                     <label>{{ labels.username }}:</label>
                 </div>
                 <div class="col-lg-9">
-                    <input type="text" ng-model="username" />
+                    <input type="text" ng-model="username" ng-disabled="loading"/>
                 </div>
             </div>
             <div style="margin-top: 30px">
@@ -22,14 +23,11 @@
                     <label>{{ labels.password }}:</label>
                 </div>
                 <div class="col-lg-9">
-                    <input type="password" ng-model="password" />
+                    <input type="password" ng-model="password" enter-event="loginCtrl.login()" ng-disabled="loading"/>
                 </div>
             </div>
             <div class="col-lg-12">
-                <button class="btn btn-primary" ng-click="loginCtrl.submit()">Login</button>
-                <div ng-show="showLoggingIn">
-                    {{ loggingInText }}
-                </div>
+                <button class="btn btn-primary" ng-click="loginCtrl.login()" ng-disabled="loading">Login</button>
             </div>
         </div>
     </div>

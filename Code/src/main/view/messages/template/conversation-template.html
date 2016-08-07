@@ -1,26 +1,49 @@
-﻿<div ng-show="showConversation">
-    <div class="col-lg-12">
+﻿<div>
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="conversationOverviewCtrl.hideInfo()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="conversationOverviewCtrl.hideErrorMessage()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ errorMessage }}
+    </div>
+    <div class="col-lg-4" style="height: 150px; overflow-y: scroll; padding: 0; margin: 0">
         <div class="list-group">
-            <a class="list-group-item"><div style="height: 50px">{{ conversationHeader }}</div></a>
+            <div ng-repeat="member in members">
+                <div class="col-lg-4" style="padding: 0; margin: 0">
+                    <member-item data="member"></member-item>
+                </div>
+            </div>
         </div>
     </div>
-    <div class="col-lg-12 list-group">
+    <div class="col-lg-8"  style="padding: 0; margin: 0" ng-show="true">
+        <student-contact-list parent-controller="controller" type="conversation" id="id"></student-contact-list>
+    </div>
+    <div class="col-lg-12 list-group"
+         style="height: 400px; overflow-y: scroll; border: 1px solid #ddd; border-radius: 4px"
+         scroll-bottom="messages">
         <div ng-repeat="message in messages">
             <conversation-message data="message"></conversation-message>
         </div>
     </div>
-    <div>
-        <div class="col-lg-8">
-                <textarea name="Text1" cols="40" rows="5"
+    <div style="margin-top: 10px">
+        <div class="col-lg-10">
+                <textarea cols="40" rows="5"
                           ng-model="message"
-                          ng-keypress="conversationCtrl.autoExpand($event)"
-                          ng-keyup="conversationCtrl.autoExpand($event)"
+                          enter-event="conversationCtrl.sendMessage()"
                           style="padding-top: 15px; padding-left:15px; padding-right: 15px;
-                                 width: 100%; height: 50px; max-height: 200px; resize: none; overflow: hidden"
-                          placeholder="..."></textarea>
+                                 width: 100%; height: 50px; resize: none; overflow-y: hidden; overflow-x: hidden">
+                </textarea>
         </div>
-        <div>
-            <button class="btn btn-default" ng-click="conversationCtrl.sendMessage()">Send</button>
+        <div class="col-lg-2">
+            <button class="btn btn-default" ng-click="conversationCtrl.sendMessage()" ng-disabled="loading">Send</button>
         </div>
     </div>
 </div>

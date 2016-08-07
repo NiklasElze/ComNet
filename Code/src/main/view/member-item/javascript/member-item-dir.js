@@ -11,7 +11,7 @@
         $scope.id = data.id;
         $scope.firstname = data.firstname;
         $scope.lastname = data.lastname;
-        $scope.seminarGroup = data.seminarGroup;
+        $scope.seminarGroup = data.seminargroup;
     }
 
     function removeStudent() {

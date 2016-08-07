@@ -1,65 +1,149 @@
-﻿function conversationController($scope, messageService) {
+﻿function conversationController($scope, $state, $stateParams, $timeout, $interval, seminarGroupService, updateService, myHttpService) {
     var that = this;
+    var id = 0;
 
-    that.showConversation = showConversation;
-    that.loadConversation = loadConversation;
     that.sendMessage = sendMessage;
-    that.autoExpand = autoExpand;
+    that.hideInfo = hideInfo;
+    that.hideErrorMessage = hideErrorMessage;
+    that.startUpdate = startUpdate;
+    that.stopUpdate = stopUpdate;
+    that.showErrorMessage = showErrorMessage;
 
     initialize();
 
     function initialize() {
-        $scope.showConversation = false;
-        $scope.members = [];
-        messageService.conversationController.set(that);
+        $scope.controller = that;
+        if ($stateParams.id === 0){
+            $state.go('main.messages.overview');
+        }
+
+        hideInfo();
+        hideErrorMessage();
+        startLoading();
+
+        id = $stateParams.id;
+        $scope.id = id;
+
+        loadConversation();
+        loadStudentContactList();
+        updateService.addUpdate('conversation', that);
+        updateService.setUpdate('conversation');
     }
 
-    function loadConversation(data){
-        var data = $scope.data;
+    function loadConversation(){
+        myHttpService.getConversationById(id).then(function(data){
+            setConversation(data);
+            stopLoading();
+        }, function(errorMessage){
+            showErrorMessage(errorMessage);
+            stopLoading();
+        });
+    }
 
-        $scope.id = data.id;
+    function loadStudentContactList() {
+        myHttpService.getStudentContactListOfConversation(id)
+            .then(function (data) {
+                $scope.seminarGroups = seminarGroupService.orderGroups(data);
+            }, function (errorMessage) {
+                showErrorMessage(errorMessage);
+            });
+    }
+
+    function setConversation(data){
         $scope.members = data.members;
+        setMessages(data.messages);
+    }
+
+    function setMessages(messages){
+        $scope.messages = messages;
+        $timeout(function(){
+            $scope.$broadcast('scrollDown');
+        }, 50);
     }
 
     function sendMessage(){
-        var message = $scope.message;
-        alert(message);
+        if ($scope.message.trim() !== '') {
+            hideInfo();
+            hideErrorMessage();
+
+            var message = {
+                text: $scope.message,
+                conversationId: id
+            };
+
+            $scope.message = '';
+
+            myHttpService.addMessage(message).then(function () {
+                loadConversation();
+            }, function (errorMessage) {
+            });
+        }
     }
 
-    function showConversation(show){
-        $scope.showConversation = show;
+    function startUpdate() {
+        return $interval(function() {
+            myHttpService.getMessagesOfConversation(id)
+                .then(function (data) {
+                    if (data.length > $scope.messages.length){
+                        setMessages(data);
+                    }
+                }, function (errorMessage) {
+                    showErrorMessage(errorMessage);
+                });
+        }, 500);
     }
 
-    function autoExpand (e) {
-        var element = typeof e === 'object' ? e.target : document.getElementById(e);
+    function stopUpdate(process){
+        $interval.cancel(process);
+    }
 
-        element.style.height = '1px';
-        element.style.height = (22 + element.scrollHeight) + 'px';
+    function startLoading(){
+        $scope.loading = true;
+    }
 
-        if (parseInt(element.style.height) >= parseInt(element.style.maxHeight)) {
-            element.style.height = element.style.maxHeight;
-            element.style.overflowY = 'scroll';
-        }
-        else {
-            element.style.overflowY = 'hidden';
-        }
-    };
+    function stopLoading(){
+        $scope.loading = false;
+    }
+
+    function showInfo(info){
+        $scope.info = info;
+        $scope.showInfo = true;
+    }
+
+    function hideInfo(){
+        $scope.info = '';
+        $scope.showInfo = false;
+    }
+
+    function showErrorMessage(errorMessage){
+        $scope.errorMessage = errorMessage;
+        $scope.showErrorMessage = true;
+    }
+
+    function hideErrorMessage(){
+        $scope.errorMessage = '';
+        $scope.showErrorMessage = false;
+    }
 }
 
 function conversationDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
-            showConversation: '=?',
-            message: '=?',
             id: '=?',
-            members: '=?'
+            message: '=?',
+            messages: '=?',
+            members: '=?',
+            showInfo: '=?',
+            showErrorMessage: '=?',
+            info: '=?',
+            errorMessage: '=?',
+            seminarGroups:'=?',
+            controller: '=?'
         },
-        controller: ['$scope', 'messageService', conversationController],
+        controller: ['$scope', '$state', '$stateParams', '$timeout', '$interval', 'seminarGroupService', 'updateService', 'myHttpService', conversationController],
         controllerAs: 'conversationCtrl',
-        templateUrl: '../../messages/template/conversation-template.html'
+        templateUrl: 'messages/template/conversation-template.html'
     }
 }
 

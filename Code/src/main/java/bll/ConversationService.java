@@ -4,6 +4,7 @@ import api.model.ConversationPushModel;
 import bll.interfaces.IConversationService;
 import common.*;
 import model.Conversation;
+import model.Message;
 import model.Student;
 import repository.ConversationRepository;
 import repository.StudentRepository;
@@ -12,6 +13,7 @@ import repository.interfaces.IStudentRepository;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class ConversationService implements IConversationService{
@@ -22,7 +24,13 @@ public class ConversationService implements IConversationService{
             try{
                 IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
 
-                return conversationRepository.getByStudentId(studentId);
+                List<Conversation> conversations = conversationRepository.getByStudentId(studentId);
+
+                for (Conversation conversation : conversations){
+                    Collections.sort((List<Message>)conversation.getMessages());
+                }
+
+                return conversations;
             }
             catch(Exception exception){
                 throw new ServiceException(ErrorType.INTERNAL_ERROR);
@@ -50,7 +58,18 @@ public class ConversationService implements IConversationService{
                     members.add(member);
                 }
 
-                return conversationRepository.getByMembers(members);
+                Conversation conversation = conversationRepository.getByMembers(members);
+
+                if (conversation == null){
+                    conversation = new Conversation();
+                    conversation.setId(-1);
+                    conversation.setMembers(new ArrayList<Student>());
+                    conversation.setMessages(new ArrayList<Message>());
+                }
+
+                Collections.sort((List<Message>)conversation.getMessages());
+
+                return conversation;
             }
             catch (Exception exception){
                 throw new ServiceException(ErrorType.INTERNAL_ERROR);
@@ -65,7 +84,11 @@ public class ConversationService implements IConversationService{
             try{
                 IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
 
-                return conversationRepository.getById(id);
+                Conversation conversation = conversationRepository.getById(id);
+
+                Collections.sort((List<Message>)conversation.getMessages());
+
+                return conversation;
             }catch (Exception exception){
                 throw new ServiceException(ErrorType.INTERNAL_ERROR);
             }
@@ -107,10 +130,6 @@ public class ConversationService implements IConversationService{
     private void addConversation(ConversationPushModel model, IConversationRepository conversationRepository, IStudentRepository studentRepository) throws ServiceException {
         Conversation conversation = new Conversation();
 
-        Student author = studentRepository.getById(model.getAuthorId());
-
-        conversation.setAuthor(author);
-
         for (int id : model.getMemberIds()){
             Student member = studentRepository.getById(id);
 
@@ -134,14 +153,6 @@ public class ConversationService implements IConversationService{
         if (conversation == null){
             throw new ServiceException(ErrorType.CONVERSATION_NOT_FOUND);
         }
-
-        Student author = studentRepository.getById(model.getAuthorId());
-
-        if (author == null){
-            throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
-        }
-
-        conversation.setAuthor(author);
 
         List<Student> newMembers = new ArrayList<>();
 

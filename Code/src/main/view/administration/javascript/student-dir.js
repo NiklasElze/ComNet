@@ -29,7 +29,7 @@ function studentController($scope, $state, myHttpService) {
 
     function deleteStudent() {
         $scope.seminarGroupCtrl.startLoading();
-        $scope.seminarGroupCtrl.hideErrorMessage;
+        $scope.seminarGroupCtrl.hideErrorMessage();
 
         myHttpService.deleteStudent($scope.id)
             .then(function () {

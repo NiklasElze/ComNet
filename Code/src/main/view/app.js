@@ -1,6 +1,6 @@
 ﻿function mainController($scope, $state, principalService) {
     $scope.logout = function () {
-        principalService.authenticate(null);
+        principalService.setIdentity(null);
         $state.go('logout');
     };
 }
@@ -96,6 +96,31 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
                 controller: 'mainCtrl'
             }
         }
+    }).state('main.messages.overview', {
+        parent: 'main.messages',
+        url: '/overview',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'messages-content':{
+                templateUrl: 'messages/html/conversation-overview.html'
+            }
+        }
+    }).state('main.messages.conversation', {
+        parent: 'main.messages',
+        url: '/conversation',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'messages-content':{
+                templateUrl: 'messages/html/conversation.html'
+            }
+        }
     }).state('main.administration', {
         parent: 'main',
         url: '/administration',
@@ -105,10 +130,6 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         views: {
             'main-content': {
                 templateUrl: 'administration/html/administration.html',
-                controller: 'mainCtrl'
-            },
-            'administration-content': {
-                templateUrl: 'administration/html/administration-overview.html',
                 controller: 'mainCtrl'
             }
         }
@@ -120,8 +141,7 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         },
         views: {
             'administration-content': {
-                templateUrl: 'administration/html/administration-overview.html',
-                controller: 'mainCtrl'
+                templateUrl: 'administration/html/administration-overview.html'
             }
         }
     }).state('main.administration.seminargroup', {
@@ -183,8 +203,50 @@ function appRun($rootScope, $state, $stateParams, $timeout, authorizationService
     });
 }
 
-angular.module('ComNet', ['ui.router'])
+function scrollBottomController($scope){
+    var that = this;
+    that.scroll = scroll;
+
+    initialize();
+
+    function initialize(){
+    }
+
+    $scope.$on('scrollDown', function(e) {
+        if ($scope.element){
+            if ($scope.element[0].scrollTop >= $scope.element[0].scrollHeight * 0.8) {
+                $scope.element.scrollTop($scope.element[0].scrollHeight);
+            }
+        }
+    });
+
+    $scope.$on('scrollDown-force', function(e){
+        if ($scope.element) {
+            $scope.element.scrollTop($scope.element[0].scrollHeight);
+        }
+    })
+}
+
+function scrollBottomDirective() {
+    return {
+        scope: {
+            scrollBottom: "="
+        },
+        controller: ['$scope', scrollBottomController],
+        controllerAs: 'scrollBottomCtrl',
+        link: function (scope, element) {
+            scope.$watchCollection('scrollBottom', function (newValue) {
+                if (newValue) {
+                    scope.element = $(element);
+                }
+            });
+        }
+    }
+}
+
+angular.module('ComNet', ['ui.router', 'ngStorage'])
     .controller('loginCtrl', ['$scope', '$state', 'principalService', loginController])
     .controller('mainCtrl', ['$scope', '$state', 'principalService', mainController])
     .config(['$stateProvider', '$urlRouterProvider', '$locationProvider', appConfig])
-    .run(['$rootScope', '$state', '$stateParams', '$timeout', 'authorizationService', 'principalService', appRun]);
+    .run(['$rootScope', '$state', '$stateParams', '$timeout', 'authorizationService', 'principalService', appRun])
+    .directive('scrollBottom', scrollBottomDirective);

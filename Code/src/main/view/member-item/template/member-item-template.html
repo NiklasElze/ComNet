@@ -1,6 +1,9 @@
-﻿<div class="list-group-item col-lg-12">
+﻿<div class="list-group-item col-lg-12" style="padding: 4px">
     <div style="float: left">
-        {{ firstname }} {{ lastname }} {{ seminarGroup.name }}
+        {{ firstname }} {{ lastname }}
+    </div>
+    <div style="float: right">
+        {{ seminarGroup.name }}
     </div>
     <div style="float: right">
         <a href="" ng-click="memberItemCtrl.removeStudent()" ng-show="showremove"><span class="glyphicon glyphicon-minus"></span></a>

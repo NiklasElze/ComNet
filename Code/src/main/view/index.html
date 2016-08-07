@@ -1,18 +1,24 @@
 ﻿<!DOCTYPE html>
-<html>
+<html ng-app="ComNet" ng-controller="titleController">
 <head>
-    <title>ComNet</title>
+    <title ng-bind="page.getTitle()"></title>
 	<meta charset="utf-8" />
     <script type="text/javascript" src="src/jquery-2.2.4.min.js"></script>
     <script type="text/javascript" src="src/bootstrap.min.js"></script>
     <script type="text/javascript" src="src/angular.min.js"></script>
     <script type="text/javascript" src="src/angular-ui-router.min.js"></script>
+    <script type="text/javascript" src="src/ngStorage.min.js"></script>
     
     <script type="text/javascript" src="app.js"></script>
     <script type="text/javascript" src="authorizationService.js"></script>
     <script type="text/javascript" src="principalService.js"></script>
     <script type="text/javascript" src="myHttpService.js"></script>
     <script type="text/javascript" src="error-service.js"></script>
+    <script type="text/javascript" src="updateService.js"></script>
+    <script type="text/javascript" src="enterEvent.js"></script>
+    <script type="text/javascript" src="titleController.js"></script>
+    <script type="text/javascript" src="titleService.js"></script>
+    <script type="text/javascript" src="seminarGroupService.js"></script>
 
     <script type="text/javascript" src="administration/javascript/administration-dir.js"></script>
     <script type="text/javascript" src="administration/javascript/administration-overview-dir.js"></script>
@@ -23,28 +29,34 @@
     <script type="text/javascript" src="administration/javascript/edit-user-dir.js"></script>
 
     <script type="text/javascript" src="logout/javascript/logout-dir.js"></script>
-    <script type="text/javascript" src="login/JavaScript/login-dir.js"></script>
+    <script type="text/javascript" src="login/javascript/login-dir.js"></script>
     <script type="text/javascript" src="login/javascript/login-translation.js"></script>
+
     <script type="text/javascript" src="nav-menu/javascript/navmenu-dir.js"></script>
     <script type="text/javascript" src="nav-menu/javascript/navmenu-service.js"></script>
     <script type="text/javascript" src="page-header/javascript/pageheader-dir.js"></script>
     <script type="text/javascript" src="home/javascript/home-dir.js"></script>
+
     <script type="text/javascript" src="profile/javascript/profile-dir.js"></script>
     <script type="text/javascript" src="messages/javascript/messages-dir.js"></script>
     <script type="text/javascript" src="messages/javascript/conversation-dir.js"></script>
     <script type="text/javascript" src="messages/javascript/conversation-overview-dir.js"></script>
     <script type="text/javascript" src="messages/javascript/conversation-overview-entry-dir.js"></script>
-    <script type="text/javascript" src="messages/javascript/message-service.js"></script>
+    <script type="text/javascript" src="messages/javascript/conversation-message-dir.js"></script>
     <script type="text/javascript" src="messages/javascript/new-conversation-dir.js"></script>
+
     <script type="text/javascript" src="student-contact-list/javascript/student-contact-list-dir.js"></script>
-    <script type="text/javascript" src="student-contact-list/javascript/contact-list-group-dir.js"></script>
+    <script type="text/javascript" src="student-contact-list/javascript/contact-list-seminar-group-dir.js"></script>
     <script type="text/javascript" src="student-contact-list/javascript/contact-list-student-dir.js"></script>
+    <script type="text/javascript" src="student-contact-list/javascript/new-member-item-dir.js"></script>
+
     <script type="text/javascript" src="member-item/javascript/member-item-dir.js"></script>
     <script type="text/javascript" src="groups/javascript/groups-dir.js"></script>
 
     <link rel="stylesheet" href="src/bootstrap.min.css" />
 </head>
-<body ng-app="ComNet">
+<body>
+    <page-header></page-header>
     <div>
         <div ui-view="content"></div>
     </div>

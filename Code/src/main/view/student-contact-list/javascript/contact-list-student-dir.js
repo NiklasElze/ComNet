@@ -1,46 +1,47 @@
 ﻿function contactListStudentController($scope) {
     var that = this;
+    var id = 0;
+    var studentContactListController = {};
 
-    that.addStudentFromContactList = addStudentFromContactList;
-    that.addStudentFromContactList = addStudentFromContactList;
+    that.add = add;
 
     initialize();
 
     function initialize() {
-        $scope.showAdd = true;
-
         var data = $scope.data;
 
-        $scope.id = data.id;
+        id = data.id;
         $scope.firstname = data.firstname;
         $scope.lastname = data.lastname;
-        $scope.seminarGroup = data.seminarGroup;
+        $scope.seminarGroup = data.seminargroup.name;
     }
 
-    function addStudentFromContactList() {
-        $scope.contactListGroupController.addStudentFromContactList($scope.data);
+    function add() {
+        var item = {
+            type: 'student',
+            data: $scope.data
+        };
+
+        $scope.studentContactListController.addItemToMembers(item);
     }
 }
 
 function contactListStudentDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
-        require: '^contactListGroup',
+        require: '^studentContactList',
         scope: {
             data: '=',
-            id: '=?',
             firstname: '=?',
             lastname: '=?',
             seminarGroup: '=?'
         },
         controller: ['$scope', contactListStudentController],
         controllerAs: 'contactListStudentCtrl',
-        templateUrl: '../../student-contact-list/template/contact-list-student-template.html',
+        templateUrl: 'student-contact-list/template/contact-list-student-template.html',
         link: {
             pre: function (scope, element, attrs, controller) {
-                scope.contactListGroupController = controller;
+                scope.studentContactListController = controller;
             }
         }
     }

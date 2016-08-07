@@ -18,7 +18,7 @@
                 <student data="student"></student>
             </div>
         </div>
-        <div ng-repeat="subGroup in subGroups | orderBy: 'name'">
+        <div ng-repeat="subGroup in subGroups | orderBy: 'name'" ng-show="showStudents">
             <seminar-group data="subGroup"></seminar-group>
         </div>
     </div>

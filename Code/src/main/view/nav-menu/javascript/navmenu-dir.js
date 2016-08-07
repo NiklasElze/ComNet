@@ -21,7 +21,12 @@
 
         var stateTarget = 'main.' + target;
 
-        $state.go(stateTarget);
+        if ($state.current.name === stateTarget){
+            $state.reload();
+        }
+        else{
+            $state.go(stateTarget);
+        }
     }
 
     function setToActive(target) {

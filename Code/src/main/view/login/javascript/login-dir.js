@@ -1,30 +1,41 @@
 ﻿'use strict';
 
-function loginController($scope, $state, loginTranslationService, myHttpService) {
+function loginController($scope, $state, loginTranslationService, titleService, myHttpService) {
     var that = this;
 
     init();
 
     return {
-        submit: submit,
+        login: login,
         changeLanguage : changeLanguage
-    }
+    };
 
     function init() {
+        titleService.setTitle('ComNet | Login');
         $scope.username = '';
         $scope.password = '';
         $scope.labels = {};
-        $scope.loggingInText = 'Loggin in...';
         $scope.showLoggingIn = false;
         $scope.showErrorMessage = false;
 
         changeLanguage(true);
     }
 
-    function submit() {
-        showLoggingIn();
+    function login() {
+        startLoading();
         hideErrorMessage();
-        $scope.loginInProcess = true;
+
+        if ($scope.username.trim() === ''){
+            showErrorMessage('Please enter username.');
+            stopLoading();
+            return;
+        }
+
+        if ($scope.password.trim() === ''){
+            showErrorMessage('Please enter password.');
+            stopLoading();
+            return;
+        }
 
         var credentials = {
             'username': $scope.username,
@@ -32,8 +43,6 @@ function loginController($scope, $state, loginTranslationService, myHttpService)
         };
 
         myHttpService.login(credentials).then(function (result) {
-            hideLoggingIn();
-
             if (result.goToParams === null) {
                 $state.go(result.goTo);
             }
@@ -41,8 +50,7 @@ function loginController($scope, $state, loginTranslationService, myHttpService)
                 $state.go(result.goTo, result.goToParams);
             }
         }, function (errorMessage) {
-            hideLoggingIn();
-            $scope.loginInProcess = false;
+            stopLoading();
             showErrorMessage('Could not log in: ' + errorMessage);
         });
     }
@@ -73,12 +81,12 @@ function loginController($scope, $state, loginTranslationService, myHttpService)
         $scope.showErrorMessage = false;
     }
 
-    function showLoggingIn() {
-        $scope.showLoggingIn = true;
+    function startLoading() {
+        $scope.loading = true;
     }
 
-    function hideLoggingIn() {
-        $scope.showLoggingIn = false;
+    function stopLoading() {
+        $scope.loading = false;
     }
 }
 
@@ -92,11 +100,11 @@ function loginDirective() {
             signin: '=?',
             errorMessage: '=?',
             showErrorMessage: '=?',
-            showLoggingIn: '=?',
+            loading: '=?',
             logginInText: '=?'
         },
         templateUrl: 'login/template/login-template.html',
-        controller: ['$scope', '$state', 'loginTranslationService', 'myHttpService', loginController],
+        controller: ['$scope', '$state', 'loginTranslationService', 'titleService', 'myHttpService', loginController],
         controllerAs: 'loginCtrl'
     }
 }

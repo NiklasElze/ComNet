@@ -1,60 +1,122 @@
-﻿function conversationOverviewController($scope, messageService) {
+﻿function conversationOverviewController($scope, $state, $interval, updateService, myHttpService) {
     var that = this;
-
-    that.showOverview = showOverview;
-    that.loadConversation = loadConversation;
-    that.loadConversationOverview = loadConversationOverview;
+    that.hideInfo = hideInfo;
+    that.hideErrorMessage = hideErrorMessage;
+    that.startUpdate = startUpdate;
+    that.stopUpdate = stopUpdate;
 
     initialize();
 
     function initialize() {
-        $scope.showOverview = true;
-        $scope.conversations = [];
+        hideInfo();
+        hideErrorMessage();
+        startLoading();
 
-        messageService.conversationOverviewController.set(that);
+        myHttpService.getConversationsOfStudent().then(function(data){
+            sortConversations(data);
+            stopLoading();
+        }, function(errorMessage){
+           showErrorMessage(errorMessage);
+            stopLoading();
+        });
 
-        loadConversationOverview();
+        updateService.addUpdate('conversation-overview', that);
+        updateService.setUpdate('conversation-overview');
     }
 
-    function loadConversationOverview() {
-        var conversations = getConversations();
-
-        $scope.conversations = getConversations();
+    function startUpdate(){
+        return $interval(function(){
+            myHttpService.getConversationsOfStudent().then(function(data){
+                if (data.length > $scope.conversations.length){
+                    sortConversations(data);
+                }
+            }, function(errorMessage){
+                showErrorMessage(errorMessage);
+            });
+        }, 2000);
     }
 
-    function loadConversation(id) {
-        var historyEntry = {
-            type: 'conversation',
-            id: id
-        };
-
-        messageService.addHistoryEntry(historyEntry);
-
-        messageService.loadConversation(id);
+    function stopUpdate(process){
+        $interval.cancel(process);
     }
 
-    function showOverview(show) {
-        $scope.showOverview = show;
+    function startLoading(){
+        $scope.loading = true;
     }
 
-    function getConversations() {
-        // -- API --
-        return [{ id: 1, members: [{ id: 1, firstname: 'Max', lastname: 'Mustermann', seminarGroup: { id: 1, name: 'CS13' } }, { id: 2, firstname: 'Erika', lastname: 'Mustermann', seminarGroup: { id: 2, name: 'CS12' } }] }, { id: 2, members: [{ id: 3, firstname: 'Hans', lastname: 'Meyer', seminarGroup: { id: 3, name: 'IT11' } }] }];
+    function stopLoading(){
+        $scope.loading = false;
+    }
+
+    function hideInfo(){
+        $scope.info = '';
+        $scope.showInfo = false;
+    }
+
+    function showInfo(info){
+        $scope.info = info;
+        $scope.showInfo = true;
+    }
+
+    function showErrorMessage(errorMessage){
+        $scope.errorMessage = errorMessage;
+        $scope.showErrorMessage = true;
+    }
+
+    function hideErrorMessage(){
+        $scope.errorMessage = '';
+        $scope.showErrorMessage = false;
+    }
+
+    function sortConversations(conversations){
+
+        var sortedConversations = [];
+
+        angular.forEach(conversations, function(conversation){
+            if (sortedConversations.length === 0){
+                sortedConversations.push(conversation);
+            }
+            else{
+                var index = getIndexInSortedList(sortedConversations, 0, conversation);
+                sortedConversations.splice(index, 0, conversation);
+            }
+        });
+
+        $scope.conversations = sortedConversations;
+    }
+
+    function getIndexInSortedList(conversations, index, conversation){
+        if (conversation.messages.length === 0){
+            return conversations.length;
+        }
+
+        if (conversations[index] === null || conversations[index] === undefined){
+            return index;
+        }
+
+        if (conversations[index].messages.length > 0 && conversation.messages.length > 0 &&
+            conversations[index].messages[conversations[index].messages.length - 1].createDate
+            > conversation.messages[conversation.messages.length - 1].createDate){
+            index = index + 1;
+            index = getIndexInSortedList(conversations, index, conversation);
+        }
+
+        return index;
     }
 }
 
 function conversationOverviewDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
-            showOverview: '=?',
-            showGoBack: '=?',
-            showGoForward: '=?',
+            showInfo: '=?',
+            showErrorMessage: '=?',
+            loading: '=?',
+            info: '=?',
+            errorMessage: '=?',
             conversations: '=?'
         },
-        controller: ['$scope', 'messageService', conversationOverviewController],
+        controller: ['$scope', '$state', '$interval', 'updateService', 'myHttpService', conversationOverviewController],
         controllerAs: 'conversationOverviewCtrl',
         templateUrl: 'messages/template/conversation-overview-template.html'
     }

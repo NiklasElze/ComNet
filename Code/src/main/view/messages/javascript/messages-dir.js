@@ -1,19 +1,20 @@
-﻿function messagesController($scope, navMenuService, messageService) {
+﻿function messagesController($state, titleService, navMenuService) {
     var that = this;
+    that.newConversation = newConversation;
 
     initialize();
 
-    return {
-    }
-
     function initialize() {
         navMenuService.setToActive('messages');
+        titleService.setTitle('ComNet | Messages');
+    }
+
+    function newConversation(){
+        $state.go('main.messages.new');
     }
 }
 
 function messagesDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
@@ -21,7 +22,7 @@ function messagesDirective() {
             showGoBack: '=?',
             showGoForward: '=?'
         },
-        controller: ['$scope', 'navMenuService', 'messageService', messagesController],
+        controller: ['$state', 'titleService', 'navMenuService', messagesController],
         controllerAs: 'messagesCtrl',
         templateUrl: 'messages/template/messages-template.html'
     }

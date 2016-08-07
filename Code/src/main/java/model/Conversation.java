@@ -12,7 +12,6 @@ import java.util.Collection;
 @Table(name = "tconversation", schema = "", catalog = "comnetdb")
 public class Conversation implements JsonConvertable{
     private int id;
-    private Student author;
     private Collection<Student> members;
     private Collection<Message> messages;
 
@@ -45,16 +44,6 @@ public class Conversation implements JsonConvertable{
         return id;
     }
 
-    @ManyToOne
-    @JoinColumns(@JoinColumn(name = "Fk_Author_Id", referencedColumnName = "Fk_User_Id", nullable = false))
-    public Student getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Student author) {
-        this.author = author;
-    }
-
     @ManyToMany
     @JoinTable(name = "tmemberlist", catalog = "comnetdb", schema = "", joinColumns = @JoinColumn(name = "Fk_Conversation_Id", referencedColumnName = "Id", nullable = false), inverseJoinColumns = @JoinColumn(name = "Fk_Student_Id", referencedColumnName = "Fk_User_Id", nullable = false))
     public Collection<Student> getMembers() {
@@ -79,8 +68,8 @@ public class Conversation implements JsonConvertable{
     public JsonObject toJson() {
         return Json.createObjectBuilder()
                 .add("id", id)
-                .add("author", author.toJson())
                 .add("members", JsonService.getListAsJsonArray(members))
+                .add("messages", JsonService.getListAsJsonArray(messages))
                 .build();
     }
 }

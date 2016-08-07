@@ -1,4 +1,4 @@
-﻿function logoutController($scope, $state) {
+﻿function logoutController($scope, $state, titleService, updateService) {
     var that = this;
 
     that.goToLogin = goToLogin;
@@ -6,6 +6,8 @@
     initialize();
 
     function initialize() {
+        titleService.setTitle('ComNet | Logout');
+        updateService.stopUpdate();
     }
 
     function goToLogin() {
@@ -14,12 +16,10 @@
 }
 
 function logoutDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {},
-        controller: ['$scope', '$state', logoutController],
+        controller: ['$scope', '$state', 'titleService', 'updateService', logoutController],
         controllerAs: 'logoutCtrl',
         templateUrl: 'logout/template/logout-template.html'
     }

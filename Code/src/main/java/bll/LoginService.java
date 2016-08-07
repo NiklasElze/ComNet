@@ -41,7 +41,7 @@ public class LoginService implements ILoginService{
                         throw new ServiceException(ErrorType.INVALID_LOGIN_DATA);
                     }
 
-                    String sessionId = createSessionId(login, loginRepository);
+                    String sessionId = createSessionId(loginRepository);
                     login.setSessionId(sessionId);
                     updateExpirationDate(login);
                     transaction.commit();
@@ -53,6 +53,7 @@ public class LoginService implements ILoginService{
                     if (student == null){
                         User user = userRepository.getById(login.getUserId());
 
+                        identity.setId(user.getId());
                         identity.setSessionId(sessionId);
                         identity.setFirstname(user.getFirstname());
                         identity.setLastname(user.getLastname());
@@ -61,6 +62,7 @@ public class LoginService implements ILoginService{
                         return identity;
                     }
 
+                    identity.setId(student.getUserdata().getId());
                     identity.setFirstname(student.getUserdata().getFirstname());
                     identity.setLastname(student.getUserdata().getLastname());
                     identity.setSessionId(sessionId);
@@ -114,7 +116,7 @@ public class LoginService implements ILoginService{
         }
     }
 
-    private String createSessionId(Login login, ILoginRepository loginRepository){
+    private String createSessionId(ILoginRepository loginRepository){
 
         SecureRandom random = new SecureRandom();
         String sessionId = new BigInteger(130, random).toString(32);
@@ -123,7 +125,7 @@ public class LoginService implements ILoginService{
 
         for (Login loginEntry : logins){
             if (Objects.equals(loginEntry.getSessionId(), sessionId)){
-                sessionId = createSessionId(login, loginRepository);
+                sessionId = createSessionId(loginRepository);
                 break;
             }
         }
