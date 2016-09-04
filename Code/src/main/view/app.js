@@ -1,4 +1,6 @@
-﻿function mainController($scope, $state, principalService) {
+﻿'use strict';
+
+function mainController($scope, $state, principalService) {
     $scope.logout = function () {
         principalService.setIdentity(null);
         $state.go('logout');
@@ -121,6 +123,17 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
                 templateUrl: 'messages/html/conversation.html'
             }
         }
+    }).state('main.messages.new', {
+        parent: 'main.messages',
+        url: '/new-conversation',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'messages-content':{
+                templateUrl: 'messages/html/new-conversation.html'
+            }
+        }
     }).state('main.administration', {
         parent: 'main',
         url: '/administration',
@@ -185,6 +198,8 @@ function appRun($rootScope, $state, $stateParams, $timeout, authorizationService
     $rootScope.$on('$stateChangeStart', function (event, toState, toStateParams, fromState, fromParams) {
         $rootScope.toState = toState;
         $rootScope.toStateParams = toStateParams;
+        $rootScope.fromState = fromState;
+        $rootScope.fromParams = fromParams;
 
         var authenticated = principalService.isAuthenticated();
 
@@ -214,7 +229,7 @@ function scrollBottomController($scope){
 
     $scope.$on('scrollDown', function(e) {
         if ($scope.element){
-            if ($scope.element[0].scrollTop >= $scope.element[0].scrollHeight * 0.8) {
+            if ($scope.element[0].scrollTop === 0 || $scope.element[0].scrollTop >= $scope.element[0].scrollHeight * 0.80) {
                 $scope.element.scrollTop($scope.element[0].scrollHeight);
             }
         }

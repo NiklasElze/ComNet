@@ -1,6 +1,7 @@
 package bll.interfaces;
 
 import api.model.ConversationPushModel;
+import api.model.Member;
 import common.ServiceException;
 import model.Conversation;
 
@@ -13,4 +14,6 @@ public interface IConversationService {
     Conversation getConversationById(int id) throws ServiceException;
 
     void addOrUpdateConversation(ConversationPushModel model) throws ServiceException;
+    void addMembersToConversation(int id, List<Member> members) throws ServiceException;
+    void removeStudentFromConversation(int conversationId, int currentUserId) throws ServiceException;
 }

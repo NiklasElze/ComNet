@@ -3,6 +3,7 @@ package bll;
 import bll.interfaces.IConversationDeletionService;
 import bll.interfaces.IMessageDeletionService;
 import common.ErrorType;
+import common.ServiceException;
 import model.Conversation;
 import model.Message;
 import model.Student;
@@ -22,34 +23,43 @@ public class MessageDeletionService implements IMessageDeletionService{
     }
 
     @Override
-    public ErrorType deleteMessagesOfStudent(Student student) {
-        IMessageRepository messageRepository = new MessageRepository(m_EntityManager);
-        IConversationDeletionService conversationDeletionService = new ConversationDeletionService(m_EntityManager);
+    public void deleteMessagesOfStudent(Student student) throws ServiceException {
+        try {
+            IMessageRepository messageRepository = new MessageRepository(m_EntityManager);
+            IConversationDeletionService conversationDeletionService = new ConversationDeletionService(m_EntityManager);
 
-        List<Message> messagesOfStudent = messageRepository.getByStudentId(student.getUserdata().getId());
-        List<Conversation> conversationsToDelete = new ArrayList<Conversation>();
+            List<Message> messagesOfStudent = messageRepository.getByStudentId(student.getUserdata().getId());
+            List<Conversation> conversationsToDelete = new ArrayList<Conversation>();
 
-        for (Message message : messagesOfStudent){
+            for (Message message : messagesOfStudent) {
 
-            if (messageBelongsToGroupConversation(message)){
-                setSenderToDeleted(message);
-            }
-            else{
-                if (!conversationsToDelete.contains(message.getConversation())){
-                    conversationsToDelete.add(message.getConversation());
+                if (!studentIsLastInConversation(message.getConversation())) {
+                    message.setSender(null);
+
+                    if (message.getConversation().getMembers().contains(student)){
+                        message.getConversation().getMembers().remove(student);
+                    }
+                } else {
+                    if (!conversationsToDelete.contains(message.getConversation())) {
+                        conversationsToDelete.add(message.getConversation());
+                    }
                 }
             }
-        }
 
-        for (Conversation conversation : conversationsToDelete){
-            conversationDeletionService.deleteConversation(conversation);
+            for (Conversation conversation : conversationsToDelete) {
+                conversationDeletionService.deleteConversation(conversation);
+            }
         }
-
-        return ErrorType.NO_ERROR;
+        catch (ServiceException exception){
+            throw exception;
+        }
+        catch (Exception exception){
+            throw new ServiceException(ErrorType.INTERNAL_ERROR);
+        }
     }
 
-    private boolean messageBelongsToGroupConversation(Message message){
-        return message.getConversation().getMembers().size() > 2;
+    private boolean studentIsLastInConversation(Conversation conversation){
+        return conversation.getMembers().size() == 1;
     }
 
     private void setSenderToDeleted(Message message){

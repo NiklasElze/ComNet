@@ -1,4 +1,6 @@
-﻿function contactListSeminarGroupController($scope) {
+﻿'use strict';
+
+function contactListSeminarGroupController($scope) {
     var that = this;
     var studentContactListController = {};
     that.expand = expand;

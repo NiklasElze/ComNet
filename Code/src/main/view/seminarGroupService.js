@@ -1,7 +1,10 @@
+'use strict';
+
 function seminarGroupService(){
     return{
         orderGroups: orderGroups,
-        indexOf: indexOf
+        indexOf: indexOf,
+        findById: findById
     };
 
     function orderGroups(seminarGroups) {
@@ -35,13 +38,19 @@ function seminarGroupService(){
             orderedGroups.splice(index, 1);
         });
 
+        angular.forEach(orderedGroups, function(group){
+            angular.forEach(group.subGroups, function (subGroup){
+                subGroup.fatherGroup = group;
+            });
+        });
+
         return orderedGroups;
     }
 
     function indexOf(groups, group) {
         var index = -1;
 
-        for (i = 0; i < groups.length; i++){
+        for (var i = 0; i < groups.length; i++){
             if (groups[i].id === group.id){
                 index = i;
                 return index;
@@ -49,6 +58,16 @@ function seminarGroupService(){
         }
 
         return index;
+    }
+
+    function findById(groups, id){
+        for (var i = 0; i < groups.length; i++){
+            if (groups[i].id === id){
+                return groups[i];
+            }
+        }
+
+        return null;
     }
 }
 

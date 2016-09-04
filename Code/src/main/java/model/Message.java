@@ -4,6 +4,8 @@ import common.interfaces.JsonConvertable;
 
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
+import javax.json.JsonValue;
 import javax.persistence.*;
 import java.sql.Timestamp;
 
@@ -71,7 +73,7 @@ public class Message implements JsonConvertable, Comparable<Message>{
     }
 
     @ManyToOne
-    @JoinColumns(@JoinColumn(name = "Fk_Sender_Id", referencedColumnName = "Fk_User_Id", nullable = false))
+    @JoinColumns(@JoinColumn(name = "Fk_Sender_Id", referencedColumnName = "Fk_User_Id", nullable = true))
     public Student getSender() {
         return sender;
     }
@@ -92,12 +94,18 @@ public class Message implements JsonConvertable, Comparable<Message>{
 
     @Override
     public JsonObject toJson() {
-        return Json.createObjectBuilder()
+        JsonObjectBuilder builder = Json.createObjectBuilder()
                 .add("id", id)
                 .add("text", text)
-                .add("createDate", createDate.getTime())
-                .add("sender", sender.toJson())
-                .build();
+                .add("createDate", createDate.getTime());
+
+        if (sender != null){
+            builder.add("sender", sender.toJson());
+        } else{
+            builder.add("sender", JsonValue.NULL);
+        }
+
+        return builder.build();
     }
 
     @Override

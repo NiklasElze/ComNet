@@ -27,15 +27,27 @@
 
     function setLastMessage(lastMessage){
         $scope.lastMessageDate = new Date(lastMessage.createDate);
+        var message;
 
-        var message = lastMessage.sender.firstname + ' ' + lastMessage.sender.lastname + ': ' + lastMessage.text.substring(0, 30);
+        if (lastMessage.sender){
+            message = lastMessage.sender.firstname + ' ' + lastMessage.sender.lastname + ': ' + lastMessage.text.substring(0, 30);
 
-        if (lastMessage.text.length > 40){
-            message = message.substring(0, 37) + '...';
+            if (lastMessage.text.length > 40){
+                message = message.substring(0, 37) + '...';
+            }
+
+            $scope.lastMessage = message;
+            $scope.showLastMessage = true;
+        } else{
+            message = 'User deleted: ' + lastMessage.text.substring(0, 30);
+
+            if (lastMessage.text.length > 40){
+                message = message.substring(0, 37) + '...';
+            }
+
+            $scope.lastMessage = message;
+            $scope.showLastMessage = true;
         }
-
-        $scope.lastMessage = message;
-        $scope.showLastMessage = true;
     }
 }
 

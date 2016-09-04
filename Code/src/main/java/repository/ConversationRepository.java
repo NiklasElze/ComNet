@@ -29,7 +29,8 @@ public class ConversationRepository implements IConversationRepository {
     @Override
     public Conversation getByMembers(Collection<Student> members) {
         Query query = m_EntityManager.createQuery("select c from Conversation c where" +
-                " (select count(m.id) from c.members m where m in (:members)) = :count");
+                " (select count(m.id) from c.members m where m in (:members)) = :count" +
+                " and (select count(m.id) from c.members m where m not in (:members)) = 0");
         query.setParameter("members", members);
         query.setParameter("count", (long)members.size());
 

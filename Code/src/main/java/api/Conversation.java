@@ -3,6 +3,7 @@ package api;
 import api.annotation.Secured;
 import api.model.ConversationPushModel;
 import api.model.CustomPrincipal;
+import api.model.Member;
 import api.model.Role;
 import api.service.SecurityService;
 import api.service.StatusCodeService;
@@ -97,12 +98,12 @@ public class Conversation {
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response getConversationByMembers(List<Integer> memberIds, @Context SecurityContext securityContext){
+    public Response getConversationByMembers(ConversationPushModel model, @Context SecurityContext securityContext){
         try{
             SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            model.Conversation conversation = m_ConversationService.getConversationByMembers(memberIds);
+            model.Conversation conversation = m_ConversationService.getConversationByMembers(model.getMemberIds());
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
@@ -135,6 +136,71 @@ public class Conversation {
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
             m_ConversationService.addOrUpdateConversation(model);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}/members/add")
+    @Secured
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response addMembersToConversation(@PathParam("id") int id, List<Member> members, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            m_ConversationService.addMembersToConversation(id, members);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
+    @PUT
+    @Path("/{id}/members/remove")
+    @Secured
+    @Produces("application/json")
+    public Response removeStudentFromConversation(@PathParam("id") int conversationId, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            int currentUserId = ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser().getId();
+
+            m_ConversationService.removeStudentFromConversation(conversationId, currentUserId);
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))

@@ -21,8 +21,96 @@ function myHttpService($state, $rootScope, $http, $q, principalService, errorSer
         addOrUpdateConversation: addOrUpdateConversation,
         addMessage: addMessage,
         getMessagesOfConversation: getMessagesOfConversation,
-        getStudentContactListOfConversation: getStudentContactListOfConversation
+        getStudentContactListOfConversation: getStudentContactListOfConversation,
+        addMembersToConversation: addMembersToConversation,
+        getStudentContactListOfNewConversation: getStudentContactListOfNewConversation,
+        removeStudentFromConversation: removeStudentFromConversation
     };
+
+    function removeStudentFromConversation(conversationId){
+        var deferred = $q.defer();
+
+        var identity = principalService.getIdentity();
+
+        $http({
+            url: 'http://localhost:8080/myTest/rest/conversation/' + conversationId + '/members/remove',
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + identity.sessionId,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        }).then(function successCallback(response) {
+            deferred.resolve(response.data);
+        }, function errorCallback(response) {
+            if (response.data) {
+                var errorType = response.data.value;
+                var errorMessage = errorService.getMessageByType(errorType);
+                deferred.reject(errorMessage);
+            }
+            else {
+                deferred.reject('Could not connect to server.');
+            }
+        });
+
+        return deferred.promise;
+    }
+
+    function getStudentContactListOfNewConversation(){
+        var deferred = $q.defer();
+
+        var identity = principalService.getIdentity();
+
+        $http({
+            url: 'http://localhost:8080/myTest/rest/seminargroup/contactlist/conversation/new',
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + identity.sessionId,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        }).then(function successCallback(response) {
+            deferred.resolve(response.data);
+        }, function errorCallback(response) {
+            if (response.data) {
+                var errorType = response.data.value;
+                var errorMessage = errorService.getMessageByType(errorType);
+                deferred.reject(errorMessage);
+            }
+            else {
+                deferred.reject('Could not connect to server.');
+            }
+        });
+
+        return deferred.promise;
+    }
+
+    function addMembersToConversation(id, members){
+        var deferred = $q.defer();
+
+        var identity = principalService.getIdentity();
+
+        $http({
+            url: 'http://localhost:8080/myTest/rest/conversation/' + id + '/members/add',
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + identity.sessionId,
+                'Content-Type': 'application/json; charset=utf-8'
+            },
+            data: members
+        }).then(function successCallback(response) {
+            deferred.resolve(response.data);
+        }, function errorCallback(response) {
+            if (response.data) {
+                var errorType = response.data.value;
+                var errorMessage = errorService.getMessageByType(errorType);
+                deferred.reject(errorMessage);
+            }
+            else {
+                deferred.reject('Could not connect to server.');
+            }
+        });
+
+        return deferred.promise;
+    }
 
     function getStudentContactListOfConversation(id){
         var deferred = $q.defer();
@@ -167,7 +255,7 @@ function myHttpService($state, $rootScope, $http, $q, principalService, errorSer
         return deferred.promise;
     }
 
-    function getConversationByMembers(memberIds){
+    function getConversationByMembers(data){
         var deferred = $q.defer();
 
         var identity = principalService.getIdentity();
@@ -179,7 +267,7 @@ function myHttpService($state, $rootScope, $http, $q, principalService, errorSer
                 'Authorization': 'Bearer ' + identity.sessionId,
                 'Content-Type': 'application/json; charset=utf-8'
             },
-            data: memberIds
+            data: data
         }).then(function successCallback(response) {
             deferred.resolve(response.data);
         }, function errorCallback(response) {

@@ -1,80 +1,104 @@
-﻿function newConversationController($scope, messageService){
+﻿function newConversationController($scope, $state, $rootScope, principalService, myHttpService){
     var that = this;
 
-    that.showButton = showButton;
-    that.showContent = showContent;
-    that.showNewConversationContent = showNewConversationContent;
-    that.startNewConversation = startNewConversation;
-    that.addStudentFromContactList = addStudentFromContactList;
-    that.removeStudentFromMembers = removeStudentFromMembers;
-
-    $scope.messageService = messageService;
+    that.saveMemberAdd = saveMemberAdd;
+    that.cancelMemberAdd = cancelMemberAdd;
+    that.hideErrorMessage = hideErrorMessage;
 
     initialize();
 
     function initialize() {
-        $scope.messageService = messageService;
-        $scope.members = [];
-
-        messageService.newConversationController.set(that);
-
-        $scope.showButton = true;
-        $scope.showContent = false;
+        $scope.controller = that;
     }
 
-    function startNewConversation() {
-        showNewConversationContent(true);
+    function cancelMemberAdd(){
+        $state.go($rootScope.fromState, $rootScope.fromParams);
+    }
 
-        messageService.startNewConversation();
+    function saveMemberAdd(members){
+        $scope.loading = true;
 
-        var historyEntry = {
-            type: 'new-conversation'
+        var memberIds = [];
+
+        memberIds.push(principalService.getIdentity().id);
+
+        angular.forEach(members, function(member){
+            memberIds.push(member.id);
+        });
+
+        var data = {
+            id: 0,
+            memberIds: memberIds
         };
 
-        messageService.addHistoryEntry(historyEntry);
+        myHttpService.getConversationByMembers(data)
+            .then(function(conversation){
+                if (conversation && conversation.id && conversation.id > 0){
+                    var params = {
+                        id: conversation.id
+                    };
+
+                    $state.go('main.messages.conversation', params);
+                } else{
+                    var data = {
+                        id: 0,
+                        memberIds: memberIds
+                    };
+
+                    myHttpService.addOrUpdateConversation(data)
+                        .then(function(){
+                            var data = {
+                                id: 0,
+                                memberIds: memberIds
+                            };
+
+                            myHttpService.getConversationByMembers(data)
+                                .then(function(conversation){
+                                    var params = {
+                                        id: conversation.id
+                                    };
+
+                                    $scope.loading = false;
+                                    $state.go('main.messages.conversation', params);
+                                }, function(error){
+                                    showError(error);
+                                    $scope.loading = false;
+                                });
+                        }, function(error){
+                            showError(error);
+                            $scope.loading = false;
+                        });
+                }
+            }, function(error){
+                showError(error);
+                $scope.loading = false;
+            });
     }
 
-    function loadNewConversation() {
-        showButton(false);
-        showContent(true);
+    function showError(error){
+        $scope.errorMessage = error;
+        $scope.showErrorMessage = true;
     }
 
-    function showButton(show) {
-        $scope.showButton = show;
-    }
-
-    function showContent(show) {
-        $scope.showContent = show;
-    }
-
-    function showNewConversationContent(show) {
-        showButton(!show);
-        showContent(show);
-    }
-
-    function addStudentFromContactList(student) {
-        $scope.members.push(student);
-    }
-
-    function removeStudentFromMembers(student) {
-        $scope.members.splice($scope.members.indexOf(student), 1);
+    function hideErrorMessage(){
+        $scope.errorMessage = '';
+        $scope.showErrorMessage = false;
     }
 }
 
 function newConversationDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
-            showButton: '=?',
-            showContent: '=?',
-            members: '=?',
-            messageService: '=?'
+            controller: '=?',
+            loading: '=?',
+            showInfo: '=?',
+            showErrorMessage: '=?',
+            errorMessage: '=?'
         },
-        controller: ['$scope', 'messageService', newConversationController],
+        controller: ['$scope', '$state', '$rootScope', 'principalService', 'myHttpService', newConversationController],
         controllerAs: 'newConversationCtrl',
-        templateUrl: '../../messages/template/new-conversation-template.html'
+        templateUrl: 'messages/template/new-conversation-template.html'
     }
 }
 

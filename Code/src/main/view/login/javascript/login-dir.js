@@ -3,14 +3,12 @@
 function loginController($scope, $state, loginTranslationService, titleService, myHttpService) {
     var that = this;
 
-    init();
+    that.hideErrorMessage = hideErrorMessage;
+    that.login = login;
 
-    return {
-        login: login,
-        changeLanguage : changeLanguage
-    };
+    initialize();
 
-    function init() {
+    function initialize() {
         titleService.setTitle('ComNet | Login');
         $scope.username = '';
         $scope.password = '';
@@ -100,8 +98,7 @@ function loginDirective() {
             signin: '=?',
             errorMessage: '=?',
             showErrorMessage: '=?',
-            loading: '=?',
-            logginInText: '=?'
+            loading: '=?'
         },
         templateUrl: 'login/template/login-template.html',
         controller: ['$scope', '$state', 'loginTranslationService', 'titleService', 'myHttpService', loginController],

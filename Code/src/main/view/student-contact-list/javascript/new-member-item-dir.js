@@ -1,3 +1,5 @@
+'use strict';
+
 function newMemberItemController($scope){
     var that = this;
 

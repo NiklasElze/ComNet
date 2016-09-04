@@ -128,6 +128,51 @@ public class StudentService implements IStudentService {
         }
     }
 
+    @Override
+    public void deleteStudent(int id) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+
+            try(MyEntityTransaction transaction = manager.beginTransaction()){
+
+                try{
+                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                    IMessageDeletionService messageDeletionService = new MessageDeletionService(manager.getManager());
+                    IUserRepository userRepository = new UserRepository(manager.getManager());
+
+                    Student student = studentRepository.getById(id);
+
+                    if (student == null){
+                        throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
+                    }
+
+                    Login login = loginRepository.getByUserId(id);
+
+                    if (login == null){
+                        throw new ServiceException(ErrorType.LOGIN_NOT_FOUND);
+                    }
+
+                    User userdata = student.getUserdata();
+                    loginRepository.delete(login);
+
+                    messageDeletionService.deleteMessagesOfStudent(student);
+
+                    studentRepository.delete(student);
+                    userRepository.delete(userdata);
+                    transaction.commit();
+                }
+                catch (ServiceException exception){
+                    throw exception;
+                }
+                catch (Exception exception){
+                    transaction.rollback();
+
+                    throw new ServiceException(ErrorType.INTERNAL_ERROR);
+                }
+            }
+        }
+    }
+
     private void createStudent(StudentPushModel model, EntityManager manager) throws InvalidKeySpecException, NoSuchAlgorithmException, ServiceException {
 
         IStudentRepository studentRepository = new StudentRepository(manager);
@@ -219,51 +264,6 @@ public class StudentService implements IStudentService {
         else{
             existingLogin.setPassword(password);
             existingLogin.setAccessDenied(model.isAccessDenied());
-        }
-    }
-
-    @Override
-    public void deleteStudent(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
-
-            try(MyEntityTransaction transaction = manager.beginTransaction()){
-
-                try{
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
-                    IMessageDeletionService messageDeletionService = new MessageDeletionService(manager.getManager());
-                    IUserRepository userRepository = new UserRepository(manager.getManager());
-
-                    Student student = studentRepository.getById(id);
-
-                    if (student == null){
-                        throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
-                    }
-
-                    Login login = loginRepository.getByUserId(id);
-
-                    if (login == null){
-                        throw new ServiceException(ErrorType.LOGIN_NOT_FOUND);
-                    }
-
-                    User userdata = student.getUserdata();
-                    loginRepository.delete(login);
-
-                    messageDeletionService.deleteMessagesOfStudent(student);
-
-                    studentRepository.delete(student);
-                    userRepository.delete(userdata);
-                    transaction.commit();
-                }
-                catch (ServiceException exception){
-                    throw exception;
-                }
-                catch (Exception exception){
-                    transaction.rollback();
-
-                    throw new ServiceException(ErrorType.INTERNAL_ERROR);
-                }
-            }
         }
     }
 }

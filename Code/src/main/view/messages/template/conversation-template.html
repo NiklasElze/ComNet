@@ -14,26 +14,33 @@
         </button>
         {{ errorMessage }}
     </div>
-    <div class="col-lg-4" style="height: 150px; overflow-y: scroll; padding: 0; margin: 0">
-        <div class="list-group">
+    <div class="col-lg-3" style="min-height: 50px; max-height: 150px; overflow-y: scroll; padding: 0; margin-top: 10px;
+                                margin-left: 15px; border: 1px solid #cccccc">
+        <div class="col-lg-12 list-group" style="padding: 0; margin-bottom: 0">
             <div ng-repeat="member in members">
-                <div class="col-lg-4" style="padding: 0; margin: 0">
+                <div class="col-lg-12" style="padding: 0; margin: 0">
                     <member-item data="member"></member-item>
                 </div>
             </div>
         </div>
     </div>
-    <div class="col-lg-8"  style="padding: 0; margin: 0" ng-show="true">
+    <div class="col-lg-4">
+        <a href="" ng-click="conversationCtrl.showContactList()" ng-show="!showContactList">Add students</a>
+    </div>
+    <div class="col-lg-4">
+        <a href="" ng-click="conversationCtrl.leaveConversation()" ng-show="!showContactList">Leave conversation</a>
+    </div>
+    <div class="col-lg-8"  style="padding: 0; margin: 0" ng-show="showContactList">
         <student-contact-list parent-controller="controller" type="conversation" id="id"></student-contact-list>
     </div>
     <div class="col-lg-12 list-group"
-         style="height: 400px; overflow-y: scroll; border: 1px solid #ddd; border-radius: 4px"
+         style="height: 400px; overflow-y: scroll; border: 1px solid #ddd; border-radius: 4px; margin-top: 10px"
          scroll-bottom="messages">
         <div ng-repeat="message in messages">
             <conversation-message data="message"></conversation-message>
         </div>
     </div>
-    <div style="margin-top: 10px">
+    <div class="col-lg-12" style="margin-top: 10px">
         <div class="col-lg-10">
                 <textarea cols="40" rows="5"
                           ng-model="message"

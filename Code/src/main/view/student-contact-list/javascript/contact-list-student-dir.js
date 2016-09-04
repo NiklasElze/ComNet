@@ -1,4 +1,6 @@
-﻿function contactListStudentController($scope) {
+﻿'use strict';
+
+function contactListStudentController($scope) {
     var that = this;
     var id = 0;
     var studentContactListController = {};

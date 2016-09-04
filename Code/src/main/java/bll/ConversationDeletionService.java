@@ -2,6 +2,7 @@ package bll;
 
 import bll.interfaces.IConversationDeletionService;
 import common.ErrorType;
+import common.ServiceException;
 import model.Conversation;
 import model.Message;
 import repository.ConversationRepository;
@@ -20,17 +21,20 @@ public class ConversationDeletionService implements IConversationDeletionService
     }
 
     @Override
-    public ErrorType deleteConversation(Conversation conversation) {
+    public void deleteConversation(Conversation conversation) throws ServiceException {
 
-        IMessageRepository messageRepository = new MessageRepository(m_EntityManager);
-        IConversationRepository conversationRepository = new ConversationRepository(m_EntityManager);
+        try {
+            IMessageRepository messageRepository = new MessageRepository(m_EntityManager);
+            IConversationRepository conversationRepository = new ConversationRepository(m_EntityManager);
 
-        for (Message message : conversation.getMessages()){
-            messageRepository.delete(message);
+            for (Message message : conversation.getMessages()) {
+                messageRepository.delete(message);
+            }
+
+            conversationRepository.delete(conversation);
         }
-
-        conversationRepository.delete(conversation);
-
-        return ErrorType.NO_ERROR;
+        catch (Exception exception){
+            throw new ServiceException(ErrorType.INTERNAL_ERROR);
+        }
     }
 }

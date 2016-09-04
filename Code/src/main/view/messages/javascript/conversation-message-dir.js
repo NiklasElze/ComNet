@@ -8,9 +8,16 @@ function conversationMessageController($scope){
     function initialize(){
         var data = $scope.data;
 
-        $scope.firstname = data.sender.firstname;
-        $scope.lastname = data.sender.lastname;
-        $scope.seminarGroup = data.sender.seminargroup.name;
+        if (data.sender){
+            $scope.firstname = data.sender.firstname;
+            $scope.lastname = data.sender.lastname;
+            $scope.seminarGroup = data.sender.seminargroup.name;
+        } else{
+            $scope.firstname = 'User deleted';
+            $scope.lastname = '';
+            $scope.seminarGroup = '';
+        }
+
         $scope.text = data.text.trim();
         $scope.createDate = new Date(data.createDate);
     }

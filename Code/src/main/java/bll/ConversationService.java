@@ -1,6 +1,8 @@
 package bll;
 
 import api.model.ConversationPushModel;
+import api.model.Member;
+import bll.interfaces.IConversationDeletionService;
 import bll.interfaces.IConversationService;
 import common.*;
 import model.Conversation;
@@ -105,10 +107,10 @@ public class ConversationService implements IConversationService{
                     IStudentRepository studentRepository = new StudentRepository(manager.getManager());
 
                     if (model.getId() > 0 ){
-                        addConversation(model, conversationRepository, studentRepository);
+                        updateConversation(model, conversationRepository, studentRepository);
                     }
                     else{
-                        updateConversation(model, conversationRepository, studentRepository);
+                        addConversation(model, conversationRepository, studentRepository);
                     }
 
                     transaction.commit();
@@ -127,18 +129,107 @@ public class ConversationService implements IConversationService{
         }
     }
 
+    @Override
+    public void addMembersToConversation(int id, List<Member> members) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+            try(MyEntityTransaction transaction = manager.beginTransaction()){
+
+                try{
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+
+                    Conversation conversation = conversationRepository.getById(id);
+
+                    if (conversation == null){
+                        throw new ServiceException(ErrorType.CONVERSATION_NOT_FOUND);
+                    }
+
+                    for (Member newMember: members){
+                        Student member = studentRepository.getById(newMember.getId());
+
+                        if (member == null){
+                            throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
+                        }
+
+                        if (conversation.getMembers().contains(member)){
+                            throw new ServiceException(ErrorType.CONVERSATION_ALREADY_CONTAINS_MEMBER);
+                        }
+
+                        conversation.getMembers().add(member);
+                    }
+
+                    transaction.commit();
+                }
+                catch (ServiceException exception){
+                    transaction.rollback();
+                    throw exception;
+                }
+                catch (Exception exception){
+                    transaction.rollback();
+                    throw new ServiceException(ErrorType.INTERNAL_ERROR);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void removeStudentFromConversation(int conversationId, int currentUserId) throws ServiceException {
+        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+            try(MyEntityTransaction transaction = manager.beginTransaction()){
+
+                try{
+                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                    IConversationDeletionService conversationDeletionService = new ConversationDeletionService(manager.getManager());
+
+                    Student currentUser = studentRepository.getById(currentUserId);
+
+                    if (currentUser == null){
+                        throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
+                    }
+
+                    Conversation conversation = conversationRepository.getById(conversationId);
+
+                    if (conversation == null){
+                        throw new ServiceException(ErrorType.CONVERSATION_NOT_FOUND);
+                    }
+
+                    conversation.getMembers().remove(currentUser);
+
+                    if (conversation.getMembers().size() <= 1){
+                        conversationDeletionService.deleteConversation(conversation);
+                    }
+
+                    transaction.commit();
+                }
+                catch (ServiceException exception){
+                    transaction.rollback();
+                    throw exception;
+                }
+                catch (Exception exception){
+                    transaction.rollback();
+                    throw new ServiceException(ErrorType.INTERNAL_ERROR);
+                }
+            }
+        }
+    }
+
     private void addConversation(ConversationPushModel model, IConversationRepository conversationRepository, IStudentRepository studentRepository) throws ServiceException {
         Conversation conversation = new Conversation();
+
+        ArrayList<Student> members = new ArrayList<>();
 
         for (int id : model.getMemberIds()){
             Student member = studentRepository.getById(id);
 
             if (member == null){
-                throw new ServiceException(ErrorType.MEMBER_NOT_FOUND);
+                throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
             }
 
-            conversation.getMembers().add(member);
+            members.add(member);
         }
+
+        conversation.setMembers(members);
 
         if (conversationExists(conversation.getMembers(), conversationRepository)){
             throw new ServiceException(ErrorType.CONVERSATION_ALREADY_EXISTS);

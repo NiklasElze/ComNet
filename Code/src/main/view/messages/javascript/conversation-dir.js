@@ -1,4 +1,6 @@
-﻿function conversationController($scope, $state, $stateParams, $timeout, $interval, seminarGroupService, updateService, myHttpService) {
+﻿'use strict';
+
+function conversationController($scope, $state, $stateParams, $timeout, $interval, seminarGroupService, updateService, myHttpService) {
     var that = this;
     var id = 0;
 
@@ -8,6 +10,10 @@
     that.startUpdate = startUpdate;
     that.stopUpdate = stopUpdate;
     that.showErrorMessage = showErrorMessage;
+    that.cancelMemberAdd = cancelMemberAdd;
+    that.showContactList = showContactList;
+    that.saveMemberAdd = saveMemberAdd;
+    that.leaveConversation = leaveConversation;
 
     initialize();
 
@@ -58,7 +64,32 @@
         $scope.messages = messages;
         $timeout(function(){
             $scope.$broadcast('scrollDown');
-        }, 50);
+        }, 80);
+    }
+
+    function showContactList(){
+        $scope.showContactList = true;
+    }
+
+    function cancelMemberAdd(){
+        $scope.showContactList = false;
+    }
+
+    function saveMemberAdd(members){
+        myHttpService.addMembersToConversation(id, members).then(function(){
+            $state.reload();
+        }, function (errorMessage){
+            showErrorMessage(errorMessage);
+        })
+    }
+
+    function leaveConversation(){
+        myHttpService.removeStudentFromConversation(id)
+            .then(function(){
+                $state.go('main.messages.overview');
+            }, function(error){
+                showErrorMessage(error);
+            });
     }
 
     function sendMessage(){
@@ -82,10 +113,16 @@
 
     function startUpdate() {
         return $interval(function() {
-            myHttpService.getMessagesOfConversation(id)
+            myHttpService.getConversationById(id)
                 .then(function (data) {
-                    if (data.length > $scope.messages.length){
-                        setMessages(data);
+                    var messages = data.messages;
+                    if (messages.length > $scope.messages.length){
+                        setMessages(data.messages);
+                    }
+
+                    var members = data.members;
+                    if (members.length !== $scope.members.length){
+                        $scope.members = members;
                     }
                 }, function (errorMessage) {
                     showErrorMessage(errorMessage);

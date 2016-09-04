@@ -5,7 +5,6 @@ import java.util.List;
 public class ConversationPushModel {
 
     private int id;
-    private int authorId;
     private List<Integer> memberIds;
 
     public int getId() {
@@ -14,14 +13,6 @@ public class ConversationPushModel {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(int authorId) {
-        this.authorId = authorId;
     }
 
     public List<Integer> getMemberIds() {

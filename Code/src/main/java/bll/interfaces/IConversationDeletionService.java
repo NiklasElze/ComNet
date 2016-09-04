@@ -1,9 +1,9 @@
 package bll.interfaces;
 
-import common.ErrorType;
+import common.ServiceException;
 import model.Conversation;
 
 public interface IConversationDeletionService {
 
-    ErrorType deleteConversation(Conversation conversation);
+    void deleteConversation(Conversation conversation) throws ServiceException;
 }

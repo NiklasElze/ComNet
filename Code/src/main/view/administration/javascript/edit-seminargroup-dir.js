@@ -4,9 +4,10 @@ function editSeminarGroupController($scope, $state, $stateParams, myHttpService)
     that.cancel = cancel;
     that.save = save;
     that.delete = deleteGroup;
-    that.orderFunction = orderFunction;
     that.hideErrorMessage = hideErrorMessage;
     that.initializeNew = initializeNew();
+
+    $scope.orderFunction = orderFunction;
 
     initialize();
 

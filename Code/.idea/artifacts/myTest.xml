@@ -67,6 +67,9 @@
           </element>
         </element>
       </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>
