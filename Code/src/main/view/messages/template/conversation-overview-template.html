@@ -1,0 +1,16 @@
+﻿<div class="list-group" style="height: 400px; overflow-y: scroll; margin-bottom: 0">
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="conversationOverviewCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="conversationOverviewCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+        {{ errorMessage }}
+    </div>
+    <div ng-repeat="conversation in conversations">
+        <conversation-overview-entry data="conversation" ng-disabled="loading"></conversation-overview-entry>
+    </div>
+</div>

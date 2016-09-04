@@ -1,0 +1,25 @@
+﻿<div class="col-lg-12" style="margin: 5px">
+    <div class="col-lg-12" ng-show="showNewMembersLabel">
+        New members: {{ newMembers.length }}
+    </div>
+    <div class="col-lg-5" style="padding-left: 0">
+        <div class="col-lg-12 list-group"
+             style="height: 150px; overflow-y: scroll; margin-bottom: 0; border: 1px solid #cccccc; padding: 0">
+            <div  class="col-lg-12" ng-repeat="item in newMemberItems | orderBy: orderFunction" style="padding: 0">
+                <new-member-item item="item"></new-member-item>
+            </div>
+        </div>
+        <div class="col-lg-12" style="margin-top: 10px">
+            <button class="btn btn-default" ng-click="studentContactListCtrl.cancel()">Cancel</button>
+            <button class="btn btn-primary" ng-click="studentContactListCtrl.save()">{{ labels.buttonSave }}</button>
+        </div>
+    </div>
+    <div class="col-lg-5" style="padding-right: 0">
+        <div class="list-group" style="height: 200px; overflow-y: scroll;margin-bottom: 0; border: 1px solid #cccccc;
+                                        float: left; width: 250px">
+            <div ng-repeat="seminarGroup in seminarGroups | orderBy: 'name'">
+                <contact-list-seminar-group data="seminarGroup"></contact-list-seminar-group>
+            </div>
+        </div>
+    </div>
+</div>
