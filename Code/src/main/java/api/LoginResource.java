@@ -15,11 +15,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
 @Path("/login")
-public class Login {
+public class LoginResource {
 
     private ILoginService m_LoginService;
 
-    public Login(){
+    public LoginResource(){
         m_LoginService = new LoginService();
     }
 

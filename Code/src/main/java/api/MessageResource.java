@@ -19,11 +19,11 @@ import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
 @Path("/message")
-public class Message {
+public class MessageResource {
 
     private IMessageService m_MessageService;
 
-    public Message(){
+    public MessageResource(){
         m_MessageService = new MessageService();
     }
 

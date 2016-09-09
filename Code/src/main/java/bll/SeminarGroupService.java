@@ -20,11 +20,11 @@ public class SeminarGroupService implements ISeminarGroupService {
 
     @Override
     public List<SeminarGroup> getContactListOfNewConversation(int currentUserId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
+                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getUnwrappedManager());
 
                 Student student = studentRepository.getById(currentUserId);
 
@@ -52,11 +52,11 @@ public class SeminarGroupService implements ISeminarGroupService {
 
     @Override
     public List<SeminarGroup> getContactListOfConversation(int conversationId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getUnwrappedManager());
 
                 Conversation conversation = conversationRepository.getById(conversationId);
 
@@ -81,10 +81,10 @@ public class SeminarGroupService implements ISeminarGroupService {
 
     @Override
     public List<SeminarGroup> getSeminarGroupList() throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+                ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getUnwrappedManager());
 
                 return seminarGroupRepository.getAll();
             }
@@ -96,12 +96,12 @@ public class SeminarGroupService implements ISeminarGroupService {
 
     @Override
     public void addOrUpdateSeminarGroup(SeminarGroupPushModel model) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+                    ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getUnwrappedManager());
 
                     SeminarGroup seminarGroup = seminarGroupRepository.getById(model.getId());
 
@@ -125,12 +125,12 @@ public class SeminarGroupService implements ISeminarGroupService {
 
     @Override
     public void deleteSeminarGroup(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()) {
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()) {
 
             try (MyEntityTransaction transaction = manager.beginTransaction()) {
 
                 try {
-                    ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getManager());
+                    ISeminarGroupRepository seminarGroupRepository = new SeminarGroupRepository(manager.getUnwrappedManager());
 
                     SeminarGroup seminarGroup = seminarGroupRepository.getById(id);
 

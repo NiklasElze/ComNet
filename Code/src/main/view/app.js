@@ -134,6 +134,29 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
                 templateUrl: 'messages/html/new-conversation.html'
             }
         }
+    }).state('main.groups', {
+        parent: 'main',
+        url: '/groups',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'main-content': {
+                templateUrl: 'groups/html/groups.html',
+                controller: 'mainCtrl'
+            }
+        }
+    }).state('main.groups.overview', {
+        parent: 'main.groups',
+        url: '/overview',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'messages-content':{
+                templateUrl: 'groups/html/group-overview.html'
+            }
+        }
     }).state('main.administration', {
         parent: 'main',
         url: '/administration',

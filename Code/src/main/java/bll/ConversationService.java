@@ -21,10 +21,10 @@ import java.util.List;
 public class ConversationService implements IConversationService{
     @Override
     public List<Conversation> getConversationsOfStudent(int studentId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
 
                 List<Conversation> conversations = conversationRepository.getByStudentId(studentId);
 
@@ -42,11 +42,11 @@ public class ConversationService implements IConversationService{
 
     @Override
     public Conversation getConversationByMembers(List<Integer> memberIds) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                 List<Student> members = new ArrayList<>();
 
@@ -81,10 +81,10 @@ public class ConversationService implements IConversationService{
 
     @Override
     public Conversation getConversationById(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
+                IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
 
                 Conversation conversation = conversationRepository.getById(id);
 
@@ -99,12 +99,12 @@ public class ConversationService implements IConversationService{
 
     @Override
     public void addOrUpdateConversation(ConversationPushModel model) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                     if (model.getId() > 0 ){
                         updateConversation(model, conversationRepository, studentRepository);
@@ -131,12 +131,12 @@ public class ConversationService implements IConversationService{
 
     @Override
     public void addMembersToConversation(int id, List<Member> members) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                     Conversation conversation = conversationRepository.getById(id);
 
@@ -174,13 +174,13 @@ public class ConversationService implements IConversationService{
 
     @Override
     public void removeStudentFromConversation(int conversationId, int currentUserId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                    IConversationDeletionService conversationDeletionService = new ConversationDeletionService(manager.getManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                    IConversationDeletionService conversationDeletionService = new ConversationDeletionService(manager.getUnwrappedManager());
 
                     Student currentUser = studentRepository.getById(currentUserId);
 
@@ -196,7 +196,7 @@ public class ConversationService implements IConversationService{
 
                     conversation.getMembers().remove(currentUser);
 
-                    if (conversation.getMembers().size() <= 1){
+                    if (conversation.getMembers().size() < 1){
                         conversationDeletionService.deleteConversation(conversation);
                     }
 

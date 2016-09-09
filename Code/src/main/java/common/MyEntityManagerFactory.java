@@ -6,11 +6,9 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.spi.PersistenceProvider;
 import java.util.HashMap;
 
-public class EntityManagerHandler {
+public class MyEntityManagerFactory {
 
     private static EntityManagerFactory m_Factory;
-
-    private static MyEntityManager m_Manager;
 
     public static void initialize(){
 

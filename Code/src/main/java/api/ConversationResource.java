@@ -1,13 +1,14 @@
 package api;
 
 import api.annotation.Secured;
+import api.model.ConversationPushModel;
 import api.model.CustomPrincipal;
+import api.model.Member;
 import api.model.Role;
-import api.model.SeminarGroupPushModel;
 import api.service.SecurityService;
 import api.service.StatusCodeService;
-import bll.SeminarGroupService;
-import bll.interfaces.ISeminarGroupService;
+import bll.ConversationService;
+import bll.interfaces.IConversationService;
 import common.ErrorType;
 import common.JsonService;
 import common.ServiceException;
@@ -18,25 +19,123 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
-@Path("/seminargroup")
-public class SeminarGroup {
+@Path("/conversation")
+public class ConversationResource {
 
-    private ISeminarGroupService m_SeminarGroupService;
+    private IConversationService m_ConversationService;
 
-    public SeminarGroup(){
-        m_SeminarGroupService = new SeminarGroupService();
+    public ConversationResource(){
+        m_ConversationService = new ConversationService();
+    }
+
+    @GET
+    @Path("/student/{id}")
+    @Secured
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getConversationsOfStudent(@PathParam("id") int studentId, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            List<model.Conversation> conversations = m_ConversationService.getConversationsOfStudent(studentId);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(JsonService.getListAsJsonArray(conversations))
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("/{id}")
+    @Secured
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getConversationById(@PathParam("id") int conversationId, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            model.Conversation conversation = m_ConversationService.getConversationById(conversationId);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(conversation.toJson())
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
+    @POST
+    @Secured
+    @Consumes("application/json")
+    @Produces("application/json")
+    public Response getConversationByMembers(ConversationPushModel model, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            model.Conversation conversation = m_ConversationService.getConversationByMembers(model.getMemberIds());
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(conversation.toJson())
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
     }
 
     @PUT
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response addOrUpdateSeminarGroup(SeminarGroupPushModel model, @Context SecurityContext securityContext){
+    public Response addOrUpdateConversation(ConversationPushModel model, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[] {Role.PERSON_IN_AUTHORITY},
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            m_SeminarGroupService.addOrUpdateSeminarGroup(model);
+            m_ConversationService.addOrUpdateConversation(model);
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
@@ -58,16 +157,17 @@ public class SeminarGroup {
         }
     }
 
-    @DELETE
-    @Path("/{id}")
+    @PUT
+    @Path("/{id}/members/add")
     @Secured
+    @Consumes("application/json")
     @Produces("application/json")
-    public Response deleteSeminarGroup(@PathParam("id") int seminarGroupId, @Context SecurityContext securityContext){
+    public Response addMembersToConversation(@PathParam("id") int id, List<Member> members, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[] {Role.PERSON_IN_AUTHORITY},
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            m_SeminarGroupService.deleteSeminarGroup(seminarGroupId);
+            m_ConversationService.addMembersToConversation(id, members);
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
@@ -89,91 +189,32 @@ public class SeminarGroup {
         }
     }
 
-    @GET
-    @Path("/list")
+    @PUT
+    @Path("/{id}/members/remove")
     @Secured
     @Produces("application/json")
-    public Response getSeminarGroupList(@Context SecurityContext securityContext) {
-        try {
-            SecurityService.authorizeUser(new Role[] {Role.PERSON_IN_AUTHORITY},
-                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
-
-            List<model.SeminarGroup> seminarGroupList = m_SeminarGroupService.getSeminarGroupList();
-
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
-                    .entity(JsonService.getListAsJsonArray(seminarGroupList))
-                    .build();
-        } catch (ServiceException serviceException) {
-            ErrorType errorType = serviceException.getErrorType();
-
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(errorType))
-                    .entity(errorType)
-                    .build();
-        } catch (Exception exception) {
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
-                    .entity(ErrorType.INTERNAL_ERROR)
-                    .build();
-        }
-    }
-
-    @GET
-    @Path("/contactlist/conversation/{id}")
-    @Secured
-    @Produces("application/json")
-    public Response getContactListOfConversation(@PathParam("id") int conversationId, @Context SecurityContext securityContext){
-        try {
-            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
-                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
-
-            List<model.SeminarGroup> seminarGroupList = m_SeminarGroupService.getContactListOfConversation(conversationId);
-
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
-                    .entity(JsonService.getListAsJsonArray(seminarGroupList))
-                    .build();
-        } catch (ServiceException serviceException) {
-            ErrorType errorType = serviceException.getErrorType();
-
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(errorType))
-                    .entity(errorType)
-                    .build();
-        } catch (Exception exception) {
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
-                    .entity(ErrorType.INTERNAL_ERROR)
-                    .build();
-        }
-    }
-
-    @GET
-    @Path("/contactlist/conversation/new")
-    @Secured
-    @Produces("application/json")
-    public Response getContactListOfNewConversation(@Context SecurityContext securityContext){
-        try {
-            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
+    public Response removeStudentFromConversation(@PathParam("id") int conversationId, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
             int currentUserId = ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser().getId();
 
-            List<model.SeminarGroup> seminarGroupList = m_SeminarGroupService.getContactListOfNewConversation(currentUserId);
+            m_ConversationService.removeStudentFromConversation(conversationId, currentUserId);
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
-                    .entity(JsonService.getListAsJsonArray(seminarGroupList))
                     .build();
-        } catch (ServiceException serviceException) {
+        }
+        catch (ServiceException serviceException){
             ErrorType errorType = serviceException.getErrorType();
 
             return Response
                     .status(StatusCodeService.getStatusByErrorType(errorType))
                     .entity(errorType)
                     .build();
-        } catch (Exception exception) {
+        }
+        catch (Exception exception){
             return Response
                     .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
                     .entity(ErrorType.INTERNAL_ERROR)

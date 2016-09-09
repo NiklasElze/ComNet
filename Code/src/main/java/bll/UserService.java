@@ -26,11 +26,11 @@ public class UserService implements IUserService {
 
     @Override
     public UserData getUserById(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IUserRepository userRepository = new UserRepository(manager.getManager());
-                ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
+                ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
 
                 Login login = loginRepository.getByUserId(id);
                 User user = userRepository.getById(id);
@@ -54,9 +54,9 @@ public class UserService implements IUserService {
 
     @Override
     public List<User> getCustodians() throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try{
-                IUserRepository userRepository = new UserRepository(manager.getManager());
+                IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
 
                 List<User> users = userRepository.getAll();
 
@@ -81,11 +81,11 @@ public class UserService implements IUserService {
 
     @Override
     public User getUserBySessionId(String sessionId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IUserRepository userRepository = new UserRepository(manager.getManager());
-                ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
+                ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
 
                 Login login = loginRepository.getBySessionId(sessionId);
 
@@ -108,12 +108,12 @@ public class UserService implements IUserService {
 
     @Override
     public void addOrUpdateUser(UserPushModel model) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()) {
 
                 try{
-                    IUserRepository userRepository = new UserRepository(manager.getManager());
-                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                    IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
+                    ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
 
                     if (model.getId() > 0){
                         updateUser(model, userRepository, loginRepository);
@@ -140,13 +140,13 @@ public class UserService implements IUserService {
 
     @Override
     public void deleteUser(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IUserRepository userRepository = new UserRepository(manager.getManager());
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                    IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
+                    ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
 
                     Student student = studentRepository.getById(id);
 

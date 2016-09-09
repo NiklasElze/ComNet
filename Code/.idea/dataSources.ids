@@ -10,16 +10,37 @@
     <schema name="" catalog="information_schema"/>
     <schema name="" catalog="mysql"/>
     <schema name="" catalog="performance_schema"/>
+    <schema name="" catalog="pokemongolog"/>
     <schema name="" catalog="sakila"/>
     <schema name="" catalog="sys"/>
     <schema name="" catalog="world"/>
     <table name="tconversation" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
-      <column name="Fk_Author_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="Id"/>
-      <foreign-key name="tconversation_ibfk_1" columns="Fk_Author_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="tmemberlist_ibfk_1" table="tmemberlist" schema="" catalog="comnetdb" columns="Fk_Conversation_Id"/>
       <exported-key name="tmessagelist_ibfk_1" table="tmessagelist" schema="" catalog="comnetdb" columns="Fk_Conversation_Id"/>
+    </table>
+    <table name="tgroup" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Name" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="Id"/>
+      <exported-key name="tgroupadministrators_ibfk_1" table="tgroupadministrators" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
+      <exported-key name="tgroupmemberlist_ibfk_1" table="tgroupmemberlist" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
+      <exported-key name="ttopic_ibfk_1" table="ttopic" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
+    </table>
+    <table name="tgroupadministrators" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Fk_Group_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_Admin_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="Fk_Group_Id,Fk_Admin_Id"/>
+      <foreign-key name="tgroupadministrators_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="tgroupadministrators_ibfk_2" columns="Fk_Admin_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+    </table>
+    <table name="tgroupmemberlist" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Fk_Group_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_Student_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="Fk_Group_Id,Fk_Student_Id"/>
+      <foreign-key name="tgroupmemberlist_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="tgroupmemberlist_ibfk_2" columns="Fk_Student_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="tlogin" schema="" catalog="comnetdb" type="TABLE">
       <column name="Username" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
@@ -40,10 +61,10 @@
     <table name="tmessage" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
       <column name="Text" sqlType="VARCHAR" precision="1024" scale="0" nullable="false" jdbcType="12"/>
-      <column name="Fk_Sender_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="fk_sender_id" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
       <column name="CreateDate" sqlType="DATETIME" precision="19" scale="0" nullable="false" jdbcType="93"/>
       <primary-key name="PRIMARY" columns="Id"/>
-      <foreign-key name="tmessage_ibfk_1" columns="Fk_Sender_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="tmessage_ibfk_1" columns="fk_sender_id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="tmessagelist_ibfk_2" table="tmessagelist" schema="" catalog="comnetdb" columns="Fk_Message_Id"/>
     </table>
     <table name="tmessagelist" schema="" catalog="comnetdb" type="TABLE">
@@ -74,9 +95,32 @@
       <primary-key name="PRIMARY" columns="Fk_User_Id"/>
       <foreign-key name="tstudent_ibfk_1" columns="Fk_SeminarGroup_Id" ref-table="tseminargroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="tstudent_ibfk_2" columns="Fk_User_Id" ref-table="tuser" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
-      <exported-key name="tconversation_ibfk_1" table="tconversation" schema="" catalog="comnetdb" columns="Fk_Author_Id"/>
+      <exported-key name="tgroupadministrators_ibfk_2" table="tgroupadministrators" schema="" catalog="comnetdb" columns="Fk_Admin_Id"/>
+      <exported-key name="tgroupmemberlist_ibfk_2" table="tgroupmemberlist" schema="" catalog="comnetdb" columns="Fk_Student_Id"/>
       <exported-key name="tmemberlist_ibfk_2" table="tmemberlist" schema="" catalog="comnetdb" columns="Fk_Student_Id"/>
-      <exported-key name="tmessage_ibfk_1" table="tmessage" schema="" catalog="comnetdb" columns="Fk_Sender_Id"/>
+      <exported-key name="tmessage_ibfk_1" table="tmessage" schema="" catalog="comnetdb" columns="fk_sender_id"/>
+      <exported-key name="ttopic_ibfk_2" table="ttopic" schema="" catalog="comnetdb" columns="Fk_Creator_Id"/>
+      <exported-key name="ttopicentry_ibfk_2" table="ttopicentry" schema="" catalog="comnetdb" columns="Fk_Sender_Id"/>
+    </table>
+    <table name="ttopic" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Fk_Group_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_Creator_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="CreateDate" sqlType="DATETIME" precision="19" scale="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="Id"/>
+      <foreign-key name="ttopic_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="ttopic_ibfk_2" columns="Fk_Creator_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="ttopicentry_ibfk_1" table="ttopicentry" schema="" catalog="comnetdb" columns="Fk_Topic_Id"/>
+    </table>
+    <table name="ttopicentry" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Fk_Topic_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_Sender_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Text" sqlType="VARCHAR" precision="1024" scale="0" nullable="false" jdbcType="12"/>
+      <column name="CreateDate" sqlType="DATETIME" precision="19" scale="0" nullable="false" jdbcType="93"/>
+      <primary-key name="PRIMARY" columns="Id"/>
+      <foreign-key name="ttopicentry_ibfk_1" columns="Fk_Topic_Id" ref-table="ttopic" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="ttopicentry_ibfk_2" columns="Fk_Sender_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="tuser" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
@@ -2575,6 +2619,67 @@
       <column name="THREAD_ID" sqlType="BIGINT UNSIGNED" precision="20" scale="0" nullable="false" jdbcType="-5"/>
       <column name="VARIABLE_NAME" sqlType="VARCHAR" precision="64" scale="0" nullable="false" jdbcType="12"/>
       <column name="VARIABLE_VALUE" sqlType="VARCHAR" precision="1024" scale="0" nullable="true" jdbcType="12"/>
+    </table>
+    <table name="gym" schema="" catalog="pokemongolog" type="TABLE">
+      <column name="Number" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="EntryId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Time" sqlType="TIME" precision="8" scale="0" nullable="true" jdbcType="92"/>
+      <column name="Coordinates" sqlType="VARCHAR" precision="100" scale="0" nullable="true" jdbcType="12"/>
+      <column name="LocationName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Level" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="Team" sqlType="VARCHAR" precision="10" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Win" sqlType="TINYINT" precision="3" scale="0" nullable="true" jdbcType="-6"/>
+      <foreign-key name="GymEntryId" columns="EntryId" ref-table="logbookentry" ref-schema="" ref-catalog="pokemongolog" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="GymEntryId" unique="false" columns="EntryId"/>
+    </table>
+    <table name="logbookentry" schema="" catalog="pokemongolog" type="TABLE">
+      <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="UserId" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="Date" sqlType="DATE" precision="10" scale="0" nullable="true" jdbcType="91"/>
+      <column name="Starttime" sqlType="TIME" precision="8" scale="0" nullable="true" jdbcType="92"/>
+      <column name="Endtime" sqlType="TIME" precision="8" scale="0" nullable="true" jdbcType="92"/>
+      <column name="Startlevel" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="LevelUp" sqlType="TINYINT" precision="3" scale="0" nullable="false" jdbcType="-6" def="MA=="/>
+      <column name="StartEp" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="EndEp" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
+      <primary-key name="PRIMARY" columns="Id"/>
+      <foreign-key name="UserId" columns="UserId" ref-table="user" ref-schema="" ref-catalog="pokemongolog" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="GymEntryId" table="gym" schema="" catalog="pokemongolog" columns="EntryId"/>
+      <exported-key name="PokemonEntryId" table="pokemon" schema="" catalog="pokemongolog" columns="EntryId"/>
+      <exported-key name="WayPointEntryId" table="waypoint" schema="" catalog="pokemongolog" columns="EntryId"/>
+      <index name="Id" unique="true" columns="Id"/>
+    </table>
+    <table name="pokemon" schema="" catalog="pokemongolog" type="TABLE">
+      <column name="Number" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="EntryId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Name" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Time" sqlType="TIME" precision="8" scale="0" nullable="true" jdbcType="92"/>
+      <column name="Coordinates" sqlType="VARCHAR" precision="100" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Wp" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="LocationName" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <foreign-key name="PokemonEntryId" columns="EntryId" ref-table="logbookentry" ref-schema="" ref-catalog="pokemongolog" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="PokemonEntryId" unique="false" columns="EntryId"/>
+    </table>
+    <table name="user" schema="" catalog="pokemongolog" type="TABLE">
+      <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="Username" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Team" sqlType="VARCHAR" precision="10" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Startdate" sqlType="DATE" precision="10" scale="0" nullable="true" jdbcType="91"/>
+      <column name="SessionId" sqlType="VARCHAR" precision="50" scale="0" nullable="true" jdbcType="12"/>
+      <column name="Password" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12"/>
+      <primary-key name="PRIMARY" columns="Id"/>
+      <exported-key name="UserId" table="logbookentry" schema="" catalog="pokemongolog" columns="UserId"/>
+      <index name="Id" unique="true" columns="Id"/>
+      <index name="Username" unique="true" columns="Username"/>
+    </table>
+    <table name="waypoint" schema="" catalog="pokemongolog" type="TABLE">
+      <column name="Number" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="EntryId" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" def="MA=="/>
+      <column name="Time" sqlType="TIME" precision="8" scale="0" nullable="false" jdbcType="92" def="JzAwOjAwOjAwJw=="/>
+      <column name="Coordinates" sqlType="VARCHAR" precision="100" scale="0" nullable="false" jdbcType="12" def="JzAn"/>
+      <column name="LocationName" sqlType="VARCHAR" precision="50" scale="0" nullable="false" jdbcType="12" def="JzAn"/>
+      <foreign-key name="WayPointEntryId" columns="EntryId" ref-table="logbookentry" ref-schema="" ref-catalog="pokemongolog" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="WayPointEntryId" unique="false" columns="EntryId"/>
     </table>
     <table name="actor" schema="" catalog="sakila" type="TABLE">
       <column name="actor_id" sqlType="SMALLINT UNSIGNED" precision="5" scale="0" nullable="false" jdbcType="5" autoIncrement="true"/>

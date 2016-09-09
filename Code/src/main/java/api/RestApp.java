@@ -1,6 +1,6 @@
-package example;
+package api;
 
-import common.EntityManagerHandler;
+import common.MyEntityManagerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 
 import javax.ws.rs.ApplicationPath;
@@ -8,7 +8,7 @@ import javax.ws.rs.ApplicationPath;
 @ApplicationPath("/rest")
 public class RestApp extends ResourceConfig {
     public RestApp() {
-        EntityManagerHandler.initialize();
+        MyEntityManagerFactory.initialize();
         packages("api");
     }
 }

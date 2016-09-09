@@ -1,44 +1,40 @@
-﻿function groupsController($scope, navMenuService) {
+﻿'use strict';
+
+function groupsController($scope, navMenuService) {
     var that = this;
 
-    that.showContent = showContent;
+    that.hideErrorMessage = hideErrorMessage;
 
     initialize();
 
-    function initialize() {
-        $scope.showContent = false;
-
-        navMenuService.groupsController.set(that);
-
-        loadGroups();
+    function initialize(){
+        navMenuService.setToActive('groups');
     }
 
-    function showContent(show) {
-        $scope.showContent = show;
+    function showErrorMessage(error){
+        $scope.errorMessage = error;
+        $scope.showError = true;
     }
 
-    function loadGroups() {
-        $scope.groups = getGroups;
-    }
-
-    function getGroups() {
-        // -- API --
-        return [{ id: 1, name: 'Essensgruppe' }, { id: 2, name: 'Theoretische Informatik' }, { id: 3, name: 'Organisation' }];
+    function hideErrorMessage(){
+        $scope.errorMessage = '';
+        $scope.showErrorMessage = false;
     }
 }
 
 function groupsDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
             groups: '=?',
-            showContent: '=?'
+            errorMessage: '=?',
+            showErrorMessage: '=?',
+            info: '=?',
+            showInfo: '=?'
         },
         controller: ['$scope', 'navMenuService', groupsController],
         controllerAs: 'groupsCtrl',
-        templateUrl: '../../groups/template/groups-template.html'
+        templateUrl: 'groups/template/groups-template.html'
     }
 }
 

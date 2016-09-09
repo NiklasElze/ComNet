@@ -26,10 +26,10 @@ public class StudentService implements IStudentService {
 
     @Override
     public List<Student> getStudentsOfSeminarGroup(int seminarGroupId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try{
-                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                 return studentRepository.getBySeminarGroupId(seminarGroupId);
             }
@@ -42,10 +42,10 @@ public class StudentService implements IStudentService {
     @Override
     public List<Student> getStudentList() throws ServiceException {
 
-        try (MyEntityManager manager = EntityManagerHandler.createEntityManager()) {
+        try (MyEntityManager manager = MyEntityManagerFactory.createEntityManager()) {
 
             try {
-                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                 return studentRepository.getAll();
             }
@@ -57,13 +57,13 @@ public class StudentService implements IStudentService {
 
     @Override
     public StudentData getStudentData(int id) throws ServiceException {
-        try (MyEntityManager manager = EntityManagerHandler.createEntityManager()) {
+        try (MyEntityManager manager = MyEntityManagerFactory.createEntityManager()) {
 
             try {
                 StudentData data = new StudentData();
 
-                ILoginRepository loginRepository = new LoginRepository(manager.getManager());
-                IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
+                IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                 Student student = studentRepository.getById(id);
 
@@ -96,20 +96,20 @@ public class StudentService implements IStudentService {
 
     @Override
     public void createOrUpdateStudent(StudentPushModel model) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                     Student student = studentRepository.getById(model.getId());
 
                     if (student == null){
-                        createStudent(model, manager.getManager());
+                        createStudent(model, manager.getUnwrappedManager());
                     }
                     else{
-                        updateStudent(model, manager.getManager());
+                        updateStudent(model, manager.getUnwrappedManager());
                     }
 
                     transaction.commit();
@@ -130,15 +130,15 @@ public class StudentService implements IStudentService {
 
     @Override
     public void deleteStudent(int id) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
-                    IMessageDeletionService messageDeletionService = new MessageDeletionService(manager.getManager());
-                    IUserRepository userRepository = new UserRepository(manager.getManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
+                    ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
+                    IMessageDeletionService messageDeletionService = new MessageDeletionService(manager.getUnwrappedManager());
+                    IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
 
                     Student student = studentRepository.getById(id);
 
