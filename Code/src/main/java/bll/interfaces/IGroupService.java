@@ -1,5 +1,6 @@
 package bll.interfaces;
 
+import api.model.GroupPushModel;
 import common.ServiceException;
 import model.Group;
 
@@ -10,7 +11,7 @@ public interface IGroupService {
 
     Group getGroupById(int id) throws ServiceException;
 
-    void addOrUpdateGroup(Group group);
-    void deleteGroup(int id);
+    void addOrUpdateGroup(GroupPushModel model) throws ServiceException;
+    void deleteGroup(int id) throws ServiceException;
 }
 

@@ -13,6 +13,7 @@ import java.util.Collection;
 @Table(name = "ttopic", schema = "", catalog = "comnetdb")
 public class Topic implements JsonConvertable{
     private int id;
+    private String name;
     private Group group;
     private Student creator;
     private Timestamp createDate;
@@ -28,6 +29,16 @@ public class Topic implements JsonConvertable{
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    @Basic
+    @Column(name = "name")
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @ManyToOne

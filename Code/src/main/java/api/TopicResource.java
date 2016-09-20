@@ -2,16 +2,16 @@ package api;
 
 import api.annotation.Secured;
 import api.model.CustomPrincipal;
-import api.model.GroupPushModel;
 import api.model.Role;
+import api.model.TopicPushModel;
 import api.service.SecurityService;
 import api.service.StatusCodeService;
-import bll.GroupService;
-import bll.interfaces.IGroupService;
+import bll.TopicService;
+import bll.interfaces.ITopicService;
 import common.ErrorType;
 import common.JsonService;
 import common.ServiceException;
-import model.Group;
+import model.Topic;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -19,61 +19,29 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
-@Path("/group")
-public class GroupResource {
+@Path("/topic")
+public class TopicResource {
 
-    private IGroupService m_GroupService;
+    private ITopicService m_TopicService;
 
-    public GroupResource(){
-        m_GroupService = new GroupService();
+    public TopicResource(){
+        m_TopicService = new TopicService();
     }
 
     @GET
-    @Path("/student/{id}")
+    @Path("/group/{id}")
     @Secured
     @Produces("application/json")
-    public Response getGroupsOfStudent(@PathParam("id") int studentId, @Context SecurityContext securityContext){
+    public Response getTopicsOfGroup(@PathParam("id") int groupId, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            List<Group> groups = m_GroupService.getGroupsOfStudent(studentId);
+            List<Topic> topics = m_TopicService.getTopicsOfGroup(groupId);
 
             return Response
-                    .status(200)
-                    .entity(JsonService.getListAsJsonArray(groups))
-                    .build();
-        }
-        catch (ServiceException serviceException){
-            ErrorType errorType = serviceException.getErrorType();
-
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(errorType))
-                    .entity(errorType)
-                    .build();
-        }
-        catch (Exception exception){
-            return Response
-                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
-                    .entity(ErrorType.INTERNAL_ERROR)
-                    .build();
-        }
-    }
-
-    @GET
-    @Path("/id")
-    @Secured
-    @Produces("application/json")
-    public Response getGroupById(@PathParam("id") int id, @Context SecurityContext securityContext){
-        try{
-            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
-                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
-
-            Group group = m_GroupService.getGroupById(id);
-
-            return Response
-                    .status(200)
-                    .entity(group.toJson())
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(JsonService.getListAsJsonArray(topics))
                     .build();
         }
         catch (ServiceException serviceException){
@@ -96,15 +64,15 @@ public class GroupResource {
     @Secured
     @Consumes("application/json")
     @Produces("application/json")
-    public Response addOrUpdateGroup(GroupPushModel model, @Context SecurityContext securityContext){
+    public Response addOrUpdateTopic(TopicPushModel model, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            m_GroupService.addOrUpdateGroup(model);
+            m_TopicService.addOrUpdateTopic(model);
 
             return Response
-                    .status(200)
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
                     .build();
         }
         catch (ServiceException serviceException){
@@ -124,18 +92,18 @@ public class GroupResource {
     }
 
     @DELETE
-    @Path("/id")
+    @Path("/{id}")
     @Secured
     @Produces("application/json")
-    public Response deleteGroup(@PathParam("id") int id, @Context SecurityContext securityContext){
+    public Response deleteTopic(@PathParam("id") int id, @Context SecurityContext securityContext){
         try{
-            SecurityService.authorizeUser(new Role[]{Role.STUDENT},
+            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
                     ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
 
-            m_GroupService.deleteGroup(id);
+            m_TopicService.deleteTopic(id);
 
             return Response
-                    .status(200)
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
                     .build();
         }
         catch (ServiceException serviceException){

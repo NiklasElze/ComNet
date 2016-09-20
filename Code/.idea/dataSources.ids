@@ -107,6 +107,7 @@
       <column name="Fk_Group_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="Fk_Creator_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <column name="CreateDate" sqlType="DATETIME" precision="19" scale="0" nullable="false" jdbcType="93"/>
+      <column name="Name" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
       <primary-key name="PRIMARY" columns="Id"/>
       <foreign-key name="ttopic_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="ttopic_ibfk_2" columns="Fk_Creator_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>

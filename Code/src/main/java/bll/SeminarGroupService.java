@@ -135,11 +135,11 @@ public class SeminarGroupService implements ISeminarGroupService {
                     SeminarGroup seminarGroup = seminarGroupRepository.getById(id);
 
                     if (seminarGroup == null){
-                        throw new ServiceException(ErrorType.GROUP_NOT_FOUND);
+                        throw new ServiceException(ErrorType.SEMINARGROUP_NOT_FOUND);
                     }
 
                     if (seminarGroup.getStudents().size() > 0){
-                        throw new ServiceException(ErrorType.GROUP_CONTAINS_STUDENTS);
+                        throw new ServiceException(ErrorType.SEMINARGROUP_CONTAINS_STUDENTS);
                     }
 
                     seminarGroupRepository.delete(seminarGroup);

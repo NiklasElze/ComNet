@@ -4,6 +4,7 @@ import api.model.StudentData;
 import api.model.StudentPushModel;
 import bll.interfaces.IMessageDeletionService;
 import bll.interfaces.IStudentService;
+import bll.interfaces.ITopicEntryDeletionService;
 import common.*;
 import model.*;
 import repository.LoginRepository;
@@ -139,6 +140,7 @@ public class StudentService implements IStudentService {
                     ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
                     IMessageDeletionService messageDeletionService = new MessageDeletionService(manager.getUnwrappedManager());
                     IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
+                    ITopicEntryDeletionService topicEntryDeletionService = new TopicEntryDeletionService(manager.getUnwrappedManager());
 
                     Student student = studentRepository.getById(id);
 
@@ -156,6 +158,7 @@ public class StudentService implements IStudentService {
                     loginRepository.delete(login);
 
                     messageDeletionService.deleteMessagesOfStudent(student);
+                    topicEntryDeletionService.deleteEntriesOfStudent(student);
 
                     studentRepository.delete(student);
                     userRepository.delete(userdata);

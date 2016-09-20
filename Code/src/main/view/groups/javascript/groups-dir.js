@@ -9,6 +9,8 @@ function groupsController($scope, navMenuService) {
 
     function initialize(){
         navMenuService.setToActive('groups');
+
+
     }
 
     function showErrorMessage(error){

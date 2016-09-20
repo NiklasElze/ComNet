@@ -35,7 +35,7 @@ public class GroupRepository implements IGroupRepository{
     }
 
     @Override
-    public void remove(Group group) {
+    public void delete(Group group) {
         m_EntityManager.remove(group);
     }
 }

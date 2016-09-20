@@ -196,7 +196,7 @@ public class ConversationService implements IConversationService{
 
                     conversation.getMembers().remove(currentUser);
 
-                    if (conversation.getMembers().size() < 1){
+                    if (conversation.getMembers().size() == 0){
                         conversationDeletionService.deleteConversation(conversation);
                     }
 

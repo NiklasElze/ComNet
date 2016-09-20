@@ -10,5 +10,5 @@ public interface IGroupRepository {
     Group getById(int id);
 
     void add(Group group);
-    void remove(Group group);
+    void delete(Group group);
 }

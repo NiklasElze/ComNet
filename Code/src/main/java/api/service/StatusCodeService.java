@@ -12,12 +12,12 @@ public class StatusCodeService {
             case NO_ERROR:
                 return Response.Status.OK;
 
-            case GROUP_NOT_FOUND:
+            case SEMINARGROUP_NOT_FOUND:
             case STUDENT_NOT_FOUND:
             case LOGIN_NOT_FOUND:
                 return Response.Status.NOT_FOUND;
 
-            case GROUP_CONTAINS_STUDENTS:
+            case SEMINARGROUP_CONTAINS_STUDENTS:
             case INVALID_LOGIN_DATA:
                 return Response.Status.FORBIDDEN;
 
