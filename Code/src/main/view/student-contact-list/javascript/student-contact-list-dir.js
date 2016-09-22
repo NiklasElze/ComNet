@@ -25,6 +25,13 @@ function studentContactListController($scope, $state, seminarGroupService, myHtt
                 }, function (errorMessage) {
                     parentController.showErrorMessage(errorMessage);
                 });
+        } else if ($scope.type === 'group' && $scope.id && $scope.id > 0) {
+            myHttpService.getStudentContactListOfGroup($scope.id)
+                .then(function (data) {
+                    $scope.seminarGroups = seminarGroupService.orderGroups(data);
+                }, function (errorMessage) {
+                    parentController.showErrorMessage(errorMessage);
+                });
         } else if ($scope.type === 'new') {
             myHttpService.getStudentContactListOfNewConversation()
                 .then(function (data) {

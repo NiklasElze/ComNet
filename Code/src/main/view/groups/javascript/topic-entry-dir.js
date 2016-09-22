@@ -11,6 +11,7 @@ function topicEntryController($scope){
         $scope.text = data.text;
         $scope.senderName = data.sender.firstname + ' ' + data.sender.lastname;
         $scope.createDate = new Date(data.createDate);
+        $scope.seminarGroup = data.sender.seminargroup.name;
     }
 }
 

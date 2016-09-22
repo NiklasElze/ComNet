@@ -33,8 +33,37 @@ function myHttpService($state, $rootScope, $http, $q, principalService, errorSer
         addOrUpdateTopic: addOrUpdateTopic,
         deleteTopic: deleteTopic,
         addTopicEntry: addTopicEntry,
-        getTopicById: getTopicById
+        getTopicById: getTopicById,
+        getStudentContactListOfGroup: getStudentContactListOfGroup
     };
+
+    function getStudentContactListOfGroup(id){
+        var deferred = $q.defer();
+
+        var identity = principalService.getIdentity();
+
+        $http({
+            url: 'http://localhost:8080/myTest/rest/seminargroup/contactlist/group/' + id,
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + identity.sessionId,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+        }).then(function successCallback(response) {
+            deferred.resolve(response.data);
+        }, function errorCallback(response) {
+            if (response.data) {
+                var errorType = response.data.value;
+                var errorMessage = errorService.getMessageByType(errorType);
+                deferred.reject(errorMessage);
+            }
+            else {
+                deferred.reject('Could not connect to server.');
+            }
+        });
+
+        return deferred.promise;
+    }
 
     function getTopicById(id){
         var deferred = $q.defer();

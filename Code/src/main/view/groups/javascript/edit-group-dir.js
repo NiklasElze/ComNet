@@ -24,7 +24,7 @@ function editGroupController($scope, $stateParams, $state, $rootScope, myHttpSer
                     $scope.members = data.members;
                     $scope.administrators = data.administrators;
 
-                    $scope.showDelete = true;
+                    $scope.showDelete = $stateParams.userIsAdmin;
                     stopLoading();
                 }, function(error){
                     stopLoading();
@@ -43,12 +43,23 @@ function editGroupController($scope, $stateParams, $state, $rootScope, myHttpSer
     }
 
     function save(){
+        var memberIds = [];
+        var administratorIds = [];
+
+        angular.forEach($scope.administrators, function(admin){
+            administratorIds.push(admin.id);
+        });
+
+        angular.forEach($scope.members, function(member){
+            memberIds.push(member.id);
+        });
+
         var data = {
             id: id,
             name: $scope.name,
             creatorId: principalService.getIdentity().id,
-            members: $scope.members,
-            administrators: $scope.administrators
+            memberIds: memberIds,
+            administratorIds: administratorIds
         };
 
         startLoading();
@@ -59,6 +70,7 @@ function editGroupController($scope, $stateParams, $state, $rootScope, myHttpSer
 
                 if (id === 0){
                     $scope.showSave = false;
+                    $scope.showDelete = false;
                 }
                 stopLoading();
             }, function(error){

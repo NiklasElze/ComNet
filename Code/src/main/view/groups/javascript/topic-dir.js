@@ -9,6 +9,7 @@ function topicController($scope, $stateParams, $state, $interval, myHttpService,
     that.addEntry = addEntry;
     that.startUpdate = startUpdate;
     that.stopUpdate = stopUpdate;
+    that.goToGroup = goToGroup;
 
     initialize();
 
@@ -28,6 +29,7 @@ function topicController($scope, $stateParams, $state, $interval, myHttpService,
                 $scope.name = data.name;
                 $scope.entries = data.entries;
                 $scope.createDate = new Date(data.createDate);
+                $scope.groupId = data.group.id;
 
                 stopLoading();
             }, function(error){
@@ -37,6 +39,14 @@ function topicController($scope, $stateParams, $state, $interval, myHttpService,
 
         updateService.addUpdate('topic', that);
         updateService.setUpdate('topic');
+    }
+
+    function goToGroup(){
+        var params = {
+            id: $scope.groupId
+        };
+
+        $state.go('main.groups.group', params);
     }
 
     function addEntry(){
