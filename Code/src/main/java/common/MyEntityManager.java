@@ -16,7 +16,7 @@ public class MyEntityManager implements AutoCloseable{
         m_EntityManager = m_EntityManagerFactory.createEntityManager();
     }
 
-    public EntityManager getManager() {
+    public EntityManager getUnwrappedManager() {
         if (m_EntityManager != null) {
             return m_EntityManager;
         }

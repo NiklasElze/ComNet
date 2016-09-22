@@ -1,44 +1,42 @@
-﻿function groupsController($scope, navMenuService) {
+﻿'use strict';
+
+function groupsController($scope, $state, navMenuService) {
     var that = this;
 
-    that.showContent = showContent;
+    that.newGroup = newGroup;
+    that.goToOverview = goToOverview;
 
     initialize();
 
-    function initialize() {
-        $scope.showContent = false;
-
-        navMenuService.groupsController.set(that);
-
-        loadGroups();
+    function initialize(){
+        navMenuService.setToActive('groups');
     }
 
-    function showContent(show) {
-        $scope.showContent = show;
+    function newGroup(){
+        var params = {
+            id: 0
+        };
+
+        $state.go('main.groups.edit', params);
     }
 
-    function loadGroups() {
-        $scope.groups = getGroups;
-    }
-
-    function getGroups() {
-        // -- API --
-        return [{ id: 1, name: 'Essensgruppe' }, { id: 2, name: 'Theoretische Informatik' }, { id: 3, name: 'Organisation' }];
+    function goToOverview(){
+        if ($state.current.name === 'main.groups.overview'){
+            $state.reload();
+        } else{
+            $state.go('main.groups.overview');
+        }
     }
 }
 
 function groupsDirective() {
-    var that = this;
-
     return {
         restrict: 'E',
         scope: {
-            groups: '=?',
-            showContent: '=?'
         },
-        controller: ['$scope', 'navMenuService', groupsController],
+        controller: ['$scope', '$state', 'navMenuService', groupsController],
         controllerAs: 'groupsCtrl',
-        templateUrl: '../../groups/template/groups-template.html'
+        templateUrl: 'groups/template/groups-template.html'
     }
 }
 

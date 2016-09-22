@@ -20,10 +20,10 @@ public class MessageService implements IMessageService{
 
     @Override
     public List<Message> getMessagesOfConversation(int conversationId) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()) {
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()) {
 
             try {
-                IMessageRepository messageRepository = new MessageRepository(manager.getManager());
+                IMessageRepository messageRepository = new MessageRepository(manager.getUnwrappedManager());
 
                 return messageRepository.getByConversationId(conversationId);
             } catch (Exception exception) {
@@ -34,13 +34,13 @@ public class MessageService implements IMessageService{
 
     @Override
     public void addMessage(MessagePushModel model) throws ServiceException {
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    IMessageRepository messageRepository = new MessageRepository(manager.getManager());
-                    IConversationRepository conversationRepository = new ConversationRepository(manager.getManager());
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
+                    IMessageRepository messageRepository = new MessageRepository(manager.getUnwrappedManager());
+                    IConversationRepository conversationRepository = new ConversationRepository(manager.getUnwrappedManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
                     Conversation conversation = conversationRepository.getById(model.getConversationId());
 

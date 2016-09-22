@@ -26,14 +26,14 @@ public class LoginService implements ILoginService{
     @Override
     public Identity loginUser(String username, String password) throws ServiceException {
 
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()){
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
 
             try(MyEntityTransaction transaction = manager.beginTransaction()){
 
                 try{
-                    ILoginRepository loginRepository = new LoginRepository(manager.getManager());
-                    IStudentRepository studentRepository = new StudentRepository(manager.getManager());
-                    IUserRepository userRepository = new UserRepository(manager.getManager());
+                    ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
+                    IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
+                    IUserRepository userRepository = new UserRepository(manager.getUnwrappedManager());
 
                     Login login = loginRepository.getByUsername(username);
 
@@ -88,11 +88,11 @@ public class LoginService implements ILoginService{
     @Override
     public boolean sessionIdIsValid(String sessionId) {
 
-        try(MyEntityManager manager = EntityManagerHandler.createEntityManager()) {
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()) {
 
             try(MyEntityTransaction transaction = manager.beginTransaction()) {
 
-                ILoginRepository loginRepository = new LoginRepository(manager.getManager());
+                ILoginRepository loginRepository = new LoginRepository(manager.getUnwrappedManager());
 
                 Login login = loginRepository.getBySessionId(sessionId);
 

@@ -33,7 +33,7 @@ public class MessageDeletionService implements IMessageDeletionService{
 
             for (Message message : messagesOfStudent) {
 
-                if (!studentIsLastInConversation(message.getConversation())) {
+                if (!studentIsLastInConversation(message.getConversation(), student)) {
                     message.setSender(null);
 
                     if (message.getConversation().getMembers().contains(student)){
@@ -43,6 +43,8 @@ public class MessageDeletionService implements IMessageDeletionService{
                     if (!conversationsToDelete.contains(message.getConversation())) {
                         conversationsToDelete.add(message.getConversation());
                     }
+
+                    messageRepository.delete(message);
                 }
             }
 
@@ -58,11 +60,7 @@ public class MessageDeletionService implements IMessageDeletionService{
         }
     }
 
-    private boolean studentIsLastInConversation(Conversation conversation){
-        return conversation.getMembers().size() == 1;
-    }
-
-    private void setSenderToDeleted(Message message){
-        message.setSender(null);
+    private boolean studentIsLastInConversation(Conversation conversation, Student student){
+        return conversation.getMembers().size() == 1 && conversation.getMembers().contains(student);
     }
 }

@@ -134,6 +134,86 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
                 templateUrl: 'messages/html/new-conversation.html'
             }
         }
+    }).state('main.groups', {
+        parent: 'main',
+        url: '/groups',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'main-content': {
+                templateUrl: 'groups/html/groups.html',
+                controller: 'mainCtrl'
+            }
+        }
+    }).state('main.groups.overview', {
+        parent: 'main.groups',
+        url: '/overview',
+        data: {
+            roles: [1]
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/group-overview.html'
+            }
+        }
+    }).state('main.groups.group', {
+        parent: 'main.groups',
+        url: '/group',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/group.html'
+            }
+        }
+    }).state('main.groups.topic', {
+        parent: 'main.groups',
+        url: '/topic',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/topic.html'
+            }
+        }
+    }).state('main.groups.edit', {
+        parent: 'main.groups',
+        url: '/edit-group',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/edit-group.html'
+            }
+        }
+    }).state('main.groups.edit-topic', {
+        parent: 'main.groups',
+        url: '/edit-topic',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0,
+            groupId: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/edit-topic.html'
+            }
+        }
     }).state('main.administration', {
         parent: 'main',
         url: '/administration',
