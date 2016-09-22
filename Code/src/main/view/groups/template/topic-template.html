@@ -1,0 +1,35 @@
+<div class="panel panel-default">
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="topicCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="topicCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+        {{ errorMessage }}
+    </div>
+    <div class="panel-heading col-lg-12">
+        <div class="col-lg-8">
+            <ol class="breadcrumb" style="margin-bottom: 0; float: left">
+                <li style="font-size: 1.2em"><b>{{ groupName }}</b></li>
+                <li>{{ name }}</li>
+            </ol>
+        </div>
+        <div class="col-lg-4">
+            <b>Created by:</b> {{ creatorName }} {{ createDate | date: 'dd.MM.yyyy' }}
+        </div>
+    </div>
+    <div class="panel-body" style="padding: 0px">
+        <div class="list-group" ng-repeat="entry in entries" style="padding: 0; margin: 0">
+            <topic-entry data="entry"></topic-entry>
+        </div>
+        <textarea cols="40" rows="5"
+                  ng-model="entry"
+                  enter-event="topicCtrl.addEntry()"
+                  style="padding-top: 15px; padding-left:15px; padding-right: 15px;
+                                 width: 100%; height: 50px; resize: none; overflow-y: hidden; overflow-x: hidden">
+        </textarea>
+    </div>
+</div>

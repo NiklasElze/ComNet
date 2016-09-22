@@ -1,0 +1,75 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" build-on-make="true" name="myTest">
+    <output-path>$PROJECT_DIR$/out/artifacts/myTest</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="ComNet-API/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="ComNet-API" />
+        </element>
+        <element id="directory" name="lib">
+          <element id="library" level="project" name="com.mysql.jdbc:com.springsource.com.mysql.jdbc:5.1.6" />
+          <element id="library" level="project" name="mysql:mysql-connector-java:6.0.3" />
+          <element id="library" level="project" name="Maven: antlr:antlr:2.7.7" />
+          <element id="library" level="project" name="Maven: com.fasterxml:classmate:1.0.0" />
+          <element id="library" level="project" name="Maven: com.google.guava:guava:14.0.1" />
+          <element id="library" level="project" name="Maven: dom4j:dom4j:1.6.1" />
+          <element id="library" level="project" name="Maven: javax.annotation:javax.annotation-api:1.2" />
+          <element id="library" level="project" name="Maven: javax.el:javax.el-api:2.2.4" />
+          <element id="library" level="project" name="Maven: javax.json:javax.json-api:1.0" />
+          <element id="library" level="project" name="Maven: javax.validation:validation-api:1.1.0.Final" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:2.0.1" />
+          <element id="library" level="project" name="Maven: javax.ws.rs:javax.ws.rs-api:sources:2.0" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.11" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-jaxrs:1.9.11" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.11" />
+          <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-xc:1.9.11" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:org.eclipse.persistence.antlr:2.5.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:org.eclipse.persistence.asm:2.5.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:org.eclipse.persistence.core:2.5.0" />
+          <element id="library" level="project" name="Maven: org.eclipse.persistence:org.eclipse.persistence.moxy:2.5.0" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2.external:asm-all-repackaged:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2.external:cglib:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2.external:javax.inject:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-api:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-locator:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2:hk2-utils:2.2.0-b14" />
+          <element id="library" level="project" name="Maven: org.glassfish.hk2:osgi-resource-locator:1.0.1" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.bundles:jaxrs-ri:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet-core:sources:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.containers:jersey-container-servlet:sources:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-client:sources:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-common:sources:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-server:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.core:jersey-server:sources:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-json-jackson:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-json-processing:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-moxy:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.jersey.media:jersey-media-multipart:2.2" />
+          <element id="library" level="project" name="Maven: org.glassfish.web:javax.el:2.2.4" />
+          <element id="library" level="project" name="Maven: org.glassfish:javax.json:1.0.2" />
+          <element id="library" level="project" name="Maven: org.glassfish:jsonp-jaxrs:1.0" />
+          <element id="library" level="project" name="Maven: org.hibernate.common:hibernate-commons-annotations:4.0.1.Final" />
+          <element id="library" level="project" name="Maven: org.hibernate.javax.persistence:hibernate-jpa-2.0-api:1.0.1.Final" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate-core:4.1.5.Final" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate-entitymanager:4.1.5.Final" />
+          <element id="library" level="project" name="Maven: org.hibernate:hibernate-validator:5.1.2.Final" />
+          <element id="library" level="project" name="Maven: org.javassist:javassist:3.15.0-GA" />
+          <element id="library" level="project" name="Maven: org.jboss.logging:jboss-logging:3.1.0.GA" />
+          <element id="library" level="project" name="Maven: org.jboss.spec.javax.transaction:jboss-transaction-api_1.1_spec:1.0.0.Final" />
+          <element id="library" level="project" name="Maven: org.jvnet.mimepull:mimepull:1.9.3" />
+          <element id="archive" name="'ComNet-API' JPA descriptors.jar">
+            <element id="jpa-descriptors" facet="ComNet-API/jpa/JPA" />
+          </element>
+        </element>
+      </element>
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/webapp/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>

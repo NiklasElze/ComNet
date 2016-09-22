@@ -1,0 +1,105 @@
+﻿<div class="col-lg-12">
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px" />
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="editUserCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="editUserCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+        {{ errorMessage }}
+    </div>
+    <div class="panel panel-default" ng-show="showUserData">
+        <div class="panel-body">
+            <div>
+                <div class="col-lg-12" style="margin-bottom: 10px;">
+                    <div class="col-lg-2" style="margin-bottom: 3px">
+                        <div style="margin-top: 2px">
+                            Username:
+                        </div>
+                    </div>
+                    <div class="col-lg-10" style="margin-bottom: 3px">
+                        <input type="text" ng-model="username" ng-disabled="requestInProgress" />
+                    </div>
+                    <div ng-show="showPasswordArea">
+                        <div class="col-lg-2">
+                            <div style="margin-top: 2px">
+                                Password:
+                            </div>
+                        </div>
+                        <div class="col-lg-10" ng-show="showPasswordField">
+                            <input type="text" ng-model="password" ng-disabled="requestInProgress"/>
+                        </div>
+                        <div class="col-lg-11" ng-show="showSetNewPassword">
+                            <a href="" ng-click="editUserCtrl.setNewPassword()" ng-disabled="requestInProgress">Set new password</a>
+                        </div>
+                        <div class="col-lg-12 panel panel-default" ng-show="showNewPasswordPanel">
+                            <div class="panel-body">
+                                New password: <input type="text" ng-model="newPassword" />
+                                <button class="btn btn-default" ng-disabled="requestInProgress" ng-click="editUserCtrl.cancelNewPassword()">Cancel</button>
+                                <button class="btn btn-primary" ng-disabled="requestInProgress" ng-click="editUserCtrl.acceptNewPassword()">Okay</button>
+                            </div>
+                        </div>
+                        <div class="col-lg-12" ng-show="passwordChanged">
+                            <i>Password changed.</i>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12" style="margin-bottom: 3px">
+                    <div class="col-lg-2">
+                        <div style="margin-top: 2px">
+                            Firstname:
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <input type="text" ng-model="firstname" ng-disabled="requestInProgress" />
+                    </div>
+                    </div>
+                <div class="col-lg-12" style="margin-bottom: 3px">
+                    <div class="col-lg-2">
+                        <div style="margin-top: 2px">
+                            Lastname:
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <input type="text" ng-model="lastname" ng-disabled="requestInProgress" />
+                    </div>
+                </div>
+                <div class="col-lg-12" ng-show="showCustodianData">
+                    <div class="col-lg-2">
+                        <div style="margin-top: 9px">
+                            Privileges:
+                        </div>
+                    </div>
+                    <div class="checkbox col-lg-10">
+                        <label><input type="checkbox" ng-model="adminSelected" ng-disabled="requestInProgress"/> Administrator</label>
+                    </div>
+                    <div class="col-lg-2">
+                    </div>
+                    <div class="checkbox col-lg-10">
+                        <label><input type="checkbox" ng-model="personInAuthoritySelected" ng-diabled="requestInProgress"/> Person in authority</label>
+                    </div>
+                </div>
+                <div class="col-lg-12" ng-show="showStudentData">
+                    <div class="col-lg-2">
+                        <div style="margin-top: 2px">
+                            Seminar group:
+                        </div>
+                    </div>
+                    <div class="col-lg-10">
+                        <select ng-options="seminargroup.name for seminargroup in seminarGroups | orderBy: 'name' track by seminargroup.id"
+                                ng-model="selectedSeminarGroup" ng-disabled="requestInProgress"
+                                style="margin-top: 3px; width: 100px; text-align: center"></select>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12" style="margin-top: 15px; margin-left: 15px">
+        <button class="btn btn-default" ng-disabled="requestInProgress" ng-click="editUserCtrl.cancel()" style="margin-right: 5px">Back</button>
+        <button class="btn btn-primary" ng-disabled="requestInProgress" ng-click="editUserCtrl.save()" ng-show="showSave" style="margin-right: 5px">Save</button>
+        <button class="btn btn-danger" ng-disabled="requestInProgress" ng-click="editUserCtrl.delete()" ng-show="showDelete" style="margin-right: 5px"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+        <button class="btn btn-primary" ng-disabled="requestInProgress" ng-click="editUserCtrl.initializeNew()" ng-show="showInitialize" style="margin-right: 5px"><span class="glyphicon glyphicon-plus"></span> {{ buttonInitializeText }}</button>
+    </div>
+</div>

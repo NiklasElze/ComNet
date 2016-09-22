@@ -1,0 +1,20 @@
+﻿<div>
+    <div class="panel panel-default">
+        <div class="panel-heading col-lg-12">
+            <div class="col-lg-4">
+                <ol class="breadcrumb" style="margin-bottom: 0; float: left">
+                    <li style="font-size: 1.2em"><b>Conversations</b></li>
+                    <li><a href="" ng-click="messagesCtrl.goToOverview()">Overview</a></li>
+                </ol>
+            </div>
+            <div class="col-lg-8" style="padding-top: 3px">
+                <ol class="breadcrumb" style="margin-bottom: 0; float: right">
+                    <li><a href="" ng-click="messagesCtrl.newConversation()"><span class="glyphicon glyphicon-plus"></span> New conversation</a></li>
+                </ol>
+            </div>
+        </div>
+        <div class="panel-body" style="padding: 0px">
+            <div ui-view="messages-content" class="col-lg-12" style="padding: 0"></div>
+        </div>
+    </div>
+</div>
