@@ -1,4 +1,4 @@
-<div class="col-lg-12">
+<div class="col-lg-12" style="padding: 0">
     <div ng-show="loading">
         <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px"/>
     </div>
@@ -10,17 +10,21 @@
         <button type="button" class="close" ng-click="groupCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
         {{ errorMessage }}
     </div>
-    <div class="panel panel-default">
+    <div class="panel panel-default" style="margin: 0">
         <div class="panel-heading col-lg-12">
             <div style="float: left">
                 <b>{{ name }}</b>
+            </div>
+            <div>
+                <a href="" ng-click="groupCtrl.edit()" ng-show="userIsAdmin"><span class="glyphicon glyphicon-pencil" style="float: left; margin-left: 10px"></span></a>
             </div>
             <div style="float: right">
                 <b>Created by: </b> {{ creatorName }}
             </div>
         </div>
         <div class="panel-body" style="padding: 0">
-            <div class="col-lg-6">
+            <div class="col-lg-12" style="margin: 15px">
+            <div class="col-lg-6" ng-show="!showContactList && !showAdminList">
                 <div class="col-lg-12">
                     <b>Members:</b>
                 </div>
@@ -30,10 +34,18 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <button class="btn btn-default">Add new members</button>
+                    <button class="btn btn-default" ng-click="groupCtrl.showContactList()" ng-show="userIsAdmin">Add new members</button>
                 </div>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-10" ng-show="showContactList">
+                <div class="col-lg-12">
+                    <b>Add members:</b>
+                </div>
+                <div class="col-lg-12">
+                    <student-contact-list parent-controller="controller" type="group" id="id"></student-contact-list>
+                </div>
+            </div>
+            <div class="col-lg-6" ng-show="!showContactList && !showAdminList">
                 <div class="col-lg-12">
                     <b>Administrators:</b>
                 </div>
@@ -43,16 +55,20 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <button class="btn btn-default">Add new administrators</button>
+                    <button class="btn btn-default" ng-show="userIsAdmin">Add new administrators</button>
                 </div>
             </div>
+            </div>
             <div class="col-lg-12" style="border: 1px solid #ddd; border-radius: 4px; padding: 0">
-                <div class="col-lg-12" style="padding: 0">
+                <div class="col-lg-6" style="margin-top: 15px">
+                    <b>Topics:</b>
+                </div>
+                <div class="col-lg-6" style="padding: 0">
                     <button class="btn btn-primary" ng-click="groupCtrl.newTopic()" style="float: right; margin: 10px"><span class="glyphicon glyphicon-plus"></span> New topic</button>
                 </div>
                 <div class="list-group col-lg-12" style="padding: 0; margin: 0">
                     <div ng-repeat="topic in topics">
-                        <topic-overview-entry data="topic"></topic-overview-entry>
+                        <topic-overview-entry data="topic" user-is-admin="userIsAdmin"></topic-overview-entry>
                     </div>
                 </div>
             </div>

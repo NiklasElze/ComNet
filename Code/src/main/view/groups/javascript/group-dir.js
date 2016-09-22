@@ -1,15 +1,24 @@
 'use strict';
 
-function groupController($scope, $state, $stateParams, $interval, myHttpService, updateService){
+function groupController($scope, $state, $stateParams, $interval, myHttpService, updateService, principalService){
     var that = this;
     var id = 0;
 
+    that.showErrorMessage = showErrorMessage;
+    that.showInfo = showInfo;
+    that.startLoading = startLoading;
+    that.stopLoading = stopLoading;
+    that.loadTopics = loadTopics;
     that.hideErrorMessage = hideErrorMessage;
     that.hideInfo = hideInfo;
     that.loadTopic = loadTopic;
     that.newTopic = newTopic;
     that.startUpdate = startUpdate;
     that.stopUpdate = stopUpdate;
+    that.cancelMemberAdd = cancelMemberAdd;
+    that.saveMemberAdd = saveMemberAdd;
+    that.showContactList = showContactList;
+    that.edit = edit;
 
     initialize();
 
@@ -19,6 +28,9 @@ function groupController($scope, $state, $stateParams, $interval, myHttpService,
         if (id === 0){
             $state.go('main.groups.overview');
         }
+
+        $scope.id = id;
+        $scope.controller = that;
 
         startLoading();
 
@@ -31,14 +43,90 @@ function groupController($scope, $state, $stateParams, $interval, myHttpService,
                 $scope.topics = data.topics;
                 $scope.createDate = new Date($scope.createDate);
 
+                $scope.userIsAdmin = userIsAdmin();
                 stopLoading();
             }, function(error){
                 stopLoading();
-                showErrorMessage(error);
+                showErrorMessage('Could not load group: ' + error);
             });
 
         updateService.addUpdate('group', that);
         updateService.setUpdate('group');
+    }
+
+    function edit(){
+        var params = {
+            id: id,
+            userIsAdmin: $scope.userIsAdmin
+        };
+
+        $state.go('main.groups.edit', params);
+    }
+
+    function loadTopics(){
+        myHttpService.getGroupById(id)
+            .then(function(data){
+                $scope.topics = data.topics;
+
+                $scope.userIsAdmin = userIsAdmin();
+            }, function(error){
+                showErrorMessage('Could not reload topics: ' + error);
+            });
+    }
+
+    function showContactList(){
+        $scope.showContactList = true;
+        $scope.showAdminList = false;
+    }
+
+    function cancelMemberAdd(){
+        $scope.showContactList = false;
+    }
+
+    function saveMemberAdd(members){
+        startLoading();
+        var memberIds = [];
+        var administratorIds = [];
+
+        angular.forEach($scope.administrators, function(admin){
+            administratorIds.push(admin.id);
+        });
+
+        angular.forEach($scope.members, function(member){
+            memberIds.push(member.id);
+        });
+
+        angular.forEach(members, function(member){
+            memberIds.push(member.id);
+        });
+
+        var data = {
+            id: id,
+            name: $scope.name,
+            memberIds: memberIds,
+            administratorIds: administratorIds
+        };
+
+        myHttpService.addOrUpdateGroup(data)
+            .then(function(){
+                $scope.showContactList = false;
+                stopLoading();
+            }, function(error){
+                showErrorMessage('Could not add members: ' + error);
+                stopLoading();
+            });
+    }
+
+    function userIsAdmin(){
+        for (var i = 0; i < $scope.administrators.length; i++){
+            var admin = $scope.administrators[i];
+
+            if (admin.id === principalService.getIdentity().id){
+                return true;
+            }
+        }
+
+        return false;
     }
 
     function newTopic() {
@@ -72,6 +160,7 @@ function groupController($scope, $state, $stateParams, $interval, myHttpService,
 
                     if (data.administrators.length > $scope.administrators.length){
                         $scope.administrators = data.administrators;
+                        $scope.userIsAdmin = userIsAdmin();
                     }
 
                     if (data.topics.length > $scope.topics.length){
@@ -127,9 +216,12 @@ function groupDirective(){
             data: '=',
             name: '=?',
             members: '=?',
-            administrators: '=?'
+            administrators: '=?',
+            userIsAdmin: '=?',
+            id: '=?',
+            controller: '=?'
         },
-        controller: ['$scope', '$state', '$stateParams', '$interval', 'myHttpService', 'updateService', groupController],
+        controller: ['$scope', '$state', '$stateParams', '$interval', 'myHttpService', 'updateService', 'principalService', groupController],
         controllerAs: 'groupCtrl',
         templateUrl: 'groups/template/group-template.html'
     }

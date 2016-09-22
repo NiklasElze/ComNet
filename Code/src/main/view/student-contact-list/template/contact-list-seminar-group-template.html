@@ -10,7 +10,7 @@
         <a href="" ng-click="contactListSeminarGroupCtrl.add()"><span class="glyphicon glyphicon-plus"></span></a>
     </div>
 </div>
-<div class="list-group" style="padding: 0">
+<div class="list-group" style="padding: 0; margin: 0">
     <div ng-show="showContent">
         <div ng-repeat="student in students | orderBy: 'firstname'">
             <contact-list-student data="student"></contact-list-student>
