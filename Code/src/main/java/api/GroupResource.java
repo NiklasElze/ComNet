@@ -61,7 +61,7 @@ public class GroupResource {
     }
 
     @GET
-    @Path("/id")
+    @Path("/{id}")
     @Secured
     @Produces("application/json")
     public Response getGroupById(@PathParam("id") int id, @Context SecurityContext securityContext){
@@ -124,7 +124,7 @@ public class GroupResource {
     }
 
     @DELETE
-    @Path("/id")
+    @Path("/{id}")
     @Secured
     @Produces("application/json")
     public Response deleteGroup(@PathParam("id") int id, @Context SecurityContext securityContext){

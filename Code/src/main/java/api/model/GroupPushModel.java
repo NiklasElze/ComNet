@@ -5,6 +5,7 @@ import java.util.List;
 public class GroupPushModel {
     private int id;
     private String name;
+    private int creatorId;
     private List<Integer> memberIds;
     private List<Integer> administratorIds;
 
@@ -22,6 +23,14 @@ public class GroupPushModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(int creatorId) {
+        this.creatorId = creatorId;
     }
 
     public List<Integer> getMemberIds() {

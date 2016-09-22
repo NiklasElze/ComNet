@@ -29,7 +29,7 @@ public class TopicEntry implements JsonConvertable{
     }
 
     @ManyToOne
-    @JoinColumns(@JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false))
+    @JoinTable(name = "ttopicentrylist", catalog = "comnetdb", schema = "", joinColumns = @JoinColumn(name = "Fk_TopicEntry_Id", referencedColumnName = "Id", nullable = false), inverseJoinColumns = @JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false))
     public Topic getTopic() {
         return topic;
     }
@@ -74,10 +74,13 @@ public class TopicEntry implements JsonConvertable{
                 Json.createObjectBuilder()
                         .add("id", topic.getGroup().getId())
                         .add("name", topic.getGroup().getName())
+                        .add("creator", topic.getGroup().getCreator().toJson())
                         .build();
 
-        JsonObject topicObject = Json.createObjectBuilder()
+        JsonObject topicObject =
+                Json.createObjectBuilder()
                         .add("id", topic.getId())
+                        .add("name", topic.getName())
                         .add("group", groupObject)
                         .add("creator", topic.getCreator().toJson())
                         .add("createDate", topic.getCreateDate().getTime())

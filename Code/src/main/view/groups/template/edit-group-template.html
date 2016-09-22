@@ -1,0 +1,30 @@
+<div class="col-lg-12">
+    <div ng-show="loading">
+        <img src="src/img/loading_spinner.gif" alt="Loading..." style="width: 60px; height: 60px" />
+    </div>
+    <div class="alert alert-success alert-dismissible" role="alert" ng-show="showInfo">
+        <button type="button" class="close" ng-click="editGroupCtrl.hideInfo()"><span aria-hidden="true">&times;</span></button>
+        {{ info }}
+    </div>
+    <div class="alert alert-danger alert-dismissible" role="alert" ng-show="showErrorMessage">
+        <button type="button" class="close" ng-click="editGroupCtrl.hideErrorMessage()"><span aria-hidden="true">&times;</span></button>
+        {{ errorMessage }}
+    </div>
+    <div ng-show="showContent" class="panel panel-default col-lg-12" style="margin: 10px">
+        <div class="col-lg-12" style="margin: 5px">
+            <div class="col-lg-2">
+                <div>
+                    Name:
+                </div>
+            </div>
+            <div>
+                <input type="text" ng-model="name" ng-disabled="loading"/>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-12">
+        <button class="btn btn-default" ng-click="editGroupCtrl.cancel()" ng-disabled="loading">Back</button>
+        <button class="btn btn-primary" ng-click="editGroupCtrl.save()" ng-disabled="loading" ng-show="showSave">Save</button>
+        <button class="btn btn-danger" ng-click="editGroupCtrl.delete()" ng-disabled="loading" ng-show="showDelete"><span class="glyphicon glyphicon-trash"></span> Delete</button>
+    </div>
+</div>

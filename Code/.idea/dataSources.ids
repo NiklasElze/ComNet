@@ -23,9 +23,12 @@
     <table name="tgroup" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
       <column name="Name" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
+      <column name="Fk_Creator_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
       <primary-key name="PRIMARY" columns="Id"/>
+      <foreign-key name="tgroup_ibfk_1" columns="Fk_Creator_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <exported-key name="tgroupadministrators_ibfk_1" table="tgroupadministrators" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
       <exported-key name="tgroupmemberlist_ibfk_1" table="tgroupmemberlist" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
+      <exported-key name="tgrouptopiclist_ibfk_1" table="tgrouptopiclist" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
       <exported-key name="ttopic_ibfk_1" table="ttopic" schema="" catalog="comnetdb" columns="Fk_Group_Id"/>
     </table>
     <table name="tgroupadministrators" schema="" catalog="comnetdb" type="TABLE">
@@ -41,6 +44,13 @@
       <primary-key name="PRIMARY" columns="Fk_Group_Id,Fk_Student_Id"/>
       <foreign-key name="tgroupmemberlist_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="tgroupmemberlist_ibfk_2" columns="Fk_Student_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+    </table>
+    <table name="tgrouptopiclist" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Fk_Group_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_Topic_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="Fk_Topic_Id"/>
+      <foreign-key name="tgrouptopiclist_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="tgrouptopiclist_ibfk_2" columns="Fk_Topic_Id" ref-table="ttopic" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="tlogin" schema="" catalog="comnetdb" type="TABLE">
       <column name="Username" sqlType="VARCHAR" precision="256" scale="0" nullable="false" jdbcType="12"/>
@@ -95,6 +105,7 @@
       <primary-key name="PRIMARY" columns="Fk_User_Id"/>
       <foreign-key name="tstudent_ibfk_1" columns="Fk_SeminarGroup_Id" ref-table="tseminargroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="tstudent_ibfk_2" columns="Fk_User_Id" ref-table="tuser" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="tgroup_ibfk_1" table="tgroup" schema="" catalog="comnetdb" columns="Fk_Creator_Id"/>
       <exported-key name="tgroupadministrators_ibfk_2" table="tgroupadministrators" schema="" catalog="comnetdb" columns="Fk_Admin_Id"/>
       <exported-key name="tgroupmemberlist_ibfk_2" table="tgroupmemberlist" schema="" catalog="comnetdb" columns="Fk_Student_Id"/>
       <exported-key name="tmemberlist_ibfk_2" table="tmemberlist" schema="" catalog="comnetdb" columns="Fk_Student_Id"/>
@@ -111,7 +122,9 @@
       <primary-key name="PRIMARY" columns="Id"/>
       <foreign-key name="ttopic_ibfk_1" columns="Fk_Group_Id" ref-table="tgroup" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="ttopic_ibfk_2" columns="Fk_Creator_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="tgrouptopiclist_ibfk_2" table="tgrouptopiclist" schema="" catalog="comnetdb" columns="Fk_Topic_Id"/>
       <exported-key name="ttopicentry_ibfk_1" table="ttopicentry" schema="" catalog="comnetdb" columns="Fk_Topic_Id"/>
+      <exported-key name="ttopicentrylist_ibfk_1" table="ttopicentrylist" schema="" catalog="comnetdb" columns="Fk_Topic_Id"/>
     </table>
     <table name="ttopicentry" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
@@ -122,6 +135,14 @@
       <primary-key name="PRIMARY" columns="Id"/>
       <foreign-key name="ttopicentry_ibfk_1" columns="Fk_Topic_Id" ref-table="ttopic" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
       <foreign-key name="ttopicentry_ibfk_2" columns="Fk_Sender_Id" ref-table="tstudent" ref-schema="" ref-catalog="comnetdb" ref-columns="Fk_User_Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="ttopicentrylist_ibfk_2" table="ttopicentrylist" schema="" catalog="comnetdb" columns="Fk_TopicEntry_Id"/>
+    </table>
+    <table name="ttopicentrylist" schema="" catalog="comnetdb" type="TABLE">
+      <column name="Fk_Topic_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="Fk_TopicEntry_Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="Fk_TopicEntry_Id"/>
+      <foreign-key name="ttopicentrylist_ibfk_1" columns="Fk_Topic_Id" ref-table="ttopic" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="ttopicentrylist_ibfk_2" columns="Fk_TopicEntry_Id" ref-table="ttopicentry" ref-schema="" ref-catalog="comnetdb" ref-columns="Id" update-rule="3" delete-rule="3" deferrability="2"/>
     </table>
     <table name="tuser" schema="" catalog="comnetdb" type="TABLE">
       <column name="Id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>

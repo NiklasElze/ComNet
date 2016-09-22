@@ -42,7 +42,7 @@ public class Topic implements JsonConvertable{
     }
 
     @ManyToOne
-    @JoinColumns(@JoinColumn(name = "Fk_Group_Id", referencedColumnName = "Id", nullable = false))
+    @JoinTable(name = "tgrouptopiclist", catalog = "comnetdb", schema = "", joinColumns = @JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false), inverseJoinColumns = @JoinColumn(name = "Fk_Group_Id", referencedColumnName = "Id", nullable = false))
     public Group getGroup() {
         return group;
     }
@@ -52,7 +52,7 @@ public class Topic implements JsonConvertable{
     }
 
     @ManyToOne
-    @JoinColumns(@JoinColumn(name = "Fk_Group_Id", referencedColumnName = "Fk_User_Id", nullable = false))
+    @JoinColumns(@JoinColumn(name = "Fk_Creator_Id", referencedColumnName = "Fk_User_Id", nullable = true))
     public Student getCreator() {
         return creator;
     }
@@ -72,7 +72,7 @@ public class Topic implements JsonConvertable{
     }
 
     @OneToMany
-    @JoinColumns(@JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false))
+    @JoinTable(name = "ttopicentrylist", catalog = "comnetdb", schema = "", joinColumns = @JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false), inverseJoinColumns = @JoinColumn(name = "Fk_TopicEntry_Id", referencedColumnName = "Id", nullable = false))
     public Collection<TopicEntry> getEntries() {
         return entries;
     }
@@ -87,11 +87,13 @@ public class Topic implements JsonConvertable{
                 Json.createObjectBuilder()
                         .add("id", group.getId())
                         .add("name", group.getName())
+                        .add("creator", group.getCreator().toJson())
                         .build();
 
         JsonObject topicObject =
                 Json.createObjectBuilder()
                         .add("id", id)
+                        .add("name", name)
                         .add("group", groupObject)
                         .add("creator", creator.toJson())
                         .add("createDate", createDate.getTime())

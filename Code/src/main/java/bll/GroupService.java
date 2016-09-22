@@ -170,25 +170,21 @@ public class GroupService implements IGroupService {
         Group group = new Group();
         group.setName(model.getName());
 
-        for (int memberId : model.getMemberIds()){
-            Student member = studentRepository.getById(memberId);
+        Student creator = studentRepository.getById(model.getCreatorId());
 
-            if (member == null){
-                throw new ServiceException(ErrorType.MEMBER_NOT_FOUND);
-            }
-
-            group.getMembers().add(member);
+        if (creator == null){
+            throw new ServiceException(ErrorType.STUDENT_NOT_FOUND);
         }
 
-        for (int administratorId : model.getAdministratorIds()){
-            Student admin = studentRepository.getById(administratorId);
+        group.setCreator(creator);
 
-            if (admin == null){
-                throw new ServiceException(ErrorType.GROUP_ADMINSTRATOR_NOT_FOUND);
-            }
+        List<Student> administrators = new ArrayList<>();
+        List<Student> members = new ArrayList<>();
+        administrators.add(creator);
+        members.add(creator);
 
-            group.getAdministrators().add(admin);
-        }
+        group.setMembers(members);
+        group.setAdministrators(administrators);
 
         groupRepository.add(group);
     }

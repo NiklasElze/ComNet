@@ -1,26 +1,31 @@
 ﻿'use strict';
 
-function groupsController($scope, navMenuService) {
+function groupsController($scope, $state, navMenuService) {
     var that = this;
 
-    that.hideErrorMessage = hideErrorMessage;
+    that.newGroup = newGroup;
+    that.goToOverview = goToOverview;
 
     initialize();
 
     function initialize(){
         navMenuService.setToActive('groups');
-
-
     }
 
-    function showErrorMessage(error){
-        $scope.errorMessage = error;
-        $scope.showError = true;
+    function newGroup(){
+        var params = {
+            id: 0
+        };
+
+        $state.go('main.groups.edit', params);
     }
 
-    function hideErrorMessage(){
-        $scope.errorMessage = '';
-        $scope.showErrorMessage = false;
+    function goToOverview(){
+        if ($state.current.name === 'main.groups.overview'){
+            $state.reload();
+        } else{
+            $state.go('main.groups.overview');
+        }
     }
 }
 
@@ -28,13 +33,8 @@ function groupsDirective() {
     return {
         restrict: 'E',
         scope: {
-            groups: '=?',
-            errorMessage: '=?',
-            showErrorMessage: '=?',
-            info: '=?',
-            showInfo: '=?'
         },
-        controller: ['$scope', 'navMenuService', groupsController],
+        controller: ['$scope', '$state', 'navMenuService', groupsController],
         controllerAs: 'groupsCtrl',
         templateUrl: 'groups/template/groups-template.html'
     }

@@ -33,6 +33,20 @@ public class TopicService implements ITopicService {
     }
 
     @Override
+    public Topic getTopicById(int id) throws ServiceException {
+        try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
+
+            try{
+                ITopicRepository topicRepository = new TopicRepository(manager.getUnwrappedManager());
+
+                return topicRepository.getById(id);
+            } catch (Exception exception){
+                throw new ServiceException(ErrorType.INTERNAL_ERROR);
+            }
+        }
+    }
+
+    @Override
     public void addOrUpdateTopic(TopicPushModel model) throws ServiceException {
         try(MyEntityManager manager = MyEntityManagerFactory.createEntityManager()){
             try(MyEntityTransaction transaction = manager.beginTransaction()){
@@ -42,7 +56,7 @@ public class TopicService implements ITopicService {
                     ITopicRepository topicRepository = new TopicRepository(manager.getUnwrappedManager());
                     IStudentRepository studentRepository = new StudentRepository(manager.getUnwrappedManager());
 
-                    if (model.getGroupId() > 0){
+                    if (model.getId() > 0){
                         updateTopic(model, topicRepository);
                     } else{
                         addTopic(model, groupRepository, topicRepository, studentRepository);

@@ -153,8 +153,65 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
             roles: [1]
         },
         views: {
-            'messages-content':{
+            'groups-content':{
                 templateUrl: 'groups/html/group-overview.html'
+            }
+        }
+    }).state('main.groups.group', {
+        parent: 'main.groups',
+        url: '/group',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/group.html'
+            }
+        }
+    }).state('main.groups.topic', {
+        parent: 'main.groups',
+        url: '/topic',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/topic.html'
+            }
+        }
+    }).state('main.groups.edit', {
+        parent: 'main.groups',
+        url: '/edit-group',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/edit-group.html'
+            }
+        }
+    }).state('main.groups.edit-topic', {
+        parent: 'main.groups',
+        url: '/edit-topic',
+        data: {
+            roles: [1]
+        },
+        params:{
+            id: 0,
+            groupId: 0
+        },
+        views: {
+            'groups-content':{
+                templateUrl: 'groups/html/edit-topic.html'
             }
         }
     }).state('main.administration', {

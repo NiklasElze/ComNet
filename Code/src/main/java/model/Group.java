@@ -13,6 +13,7 @@ import java.util.Collection;
 public class Group implements JsonConvertable{
     private int id;
     private String name;
+    private Student creator;
     private Collection<Topic> topics;
     private Collection<Student> members;
     private Collection<Student> administrators;
@@ -39,8 +40,18 @@ public class Group implements JsonConvertable{
         this.name = name;
     }
 
+    @ManyToOne
+    @JoinColumns(@JoinColumn(name = "Fk_Creator_Id", referencedColumnName = "Fk_User_Id", nullable = true))
+    public Student getCreator() {
+        return creator;
+    }
+
+    public void setCreator(Student creator) {
+        this.creator = creator;
+    }
+
     @OneToMany
-    @JoinColumns(@JoinColumn(name = "Fk_Group_Id", referencedColumnName = "Id", nullable = false))
+    @JoinTable(name = "tgrouptopiclist", catalog = "comnetdb", schema = "", joinColumns = @JoinColumn(name = "Fk_Group_Id", referencedColumnName = "Id", nullable = false), inverseJoinColumns = @JoinColumn(name = "Fk_Topic_Id", referencedColumnName = "Id", nullable = false))
     public Collection<Topic> getTopics() {
         return topics;
     }
@@ -72,11 +83,12 @@ public class Group implements JsonConvertable{
     @Override
     public JsonObject toJson() {
         return Json.createObjectBuilder()
-        .add("id", id)
-        .add("name", name)
-        .add("topics", JsonService.getListAsJsonArray(topics))
-        .add("members", JsonService.getListAsJsonArray(members))
-        .add("administrators", JsonService.getListAsJsonArray(administrators))
-        .build();
+                .add("id", id)
+                .add("name", name)
+                .add("creator", creator.toJson())
+                .add("topics", JsonService.getListAsJsonArray(topics))
+                .add("members", JsonService.getListAsJsonArray(members))
+                .add("administrators", JsonService.getListAsJsonArray(administrators))
+                .build();
     }
 }

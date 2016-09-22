@@ -60,6 +60,38 @@ public class TopicResource {
         }
     }
 
+    @GET
+    @Path("/{id}")
+    @Secured
+    @Produces("application/json")
+    public Response getTopicById(@PathParam("id") int id, @Context SecurityContext securityContext){
+        try{
+            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            Topic topic = m_TopicService.getTopicById(id);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(topic.toJson())
+                    .build();
+        }
+        catch (ServiceException serviceException){
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        }
+        catch (Exception exception){
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
     @PUT
     @Secured
     @Consumes("application/json")

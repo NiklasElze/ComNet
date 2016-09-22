@@ -10,6 +10,8 @@
         <class>model.Student</class>
         <class>model.User</class>
         <class>model.Privilege</class>
+        <class>model.Topic</class>
+        <class>model.TopicEntry</class>
         <properties>
             <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/comnetdb?useUnicode=yes&amp;characterEncoding=UTF-8"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>

@@ -25,7 +25,7 @@ public class TopicEntryPushModel {
         return topicId;
     }
 
-    public void setTopic(int groupId) {
-        this.topicId = groupId;
+    public void setTopicId(int topicId) {
+        this.topicId = topicId;
     }
 }
