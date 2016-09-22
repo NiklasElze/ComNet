@@ -2,10 +2,14 @@
      ng-click="topicOverviewEntryCtrl.loadTopic()">
     <div style="height: 50px">
         <div>
-            <div class="col-lg-6">
+            <div class="col-lg-11">
                 <div class="col-lg-12" style="padding: 4px; margin-bottom: 10px">
                     <b>{{ name }}</b>
                 </div>
+            </div>
+            <div class="col-lg-1" style="float: right">
+                <a href="" ng-click="topicOverviewEntryCtrl.edit()" ng-show="userIsAdmin" style="margin-right: 7px"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a href=""ng-click="topicOverviewEntryCtrl.delete()" ng-show="userIsAdmin"><span class="glyphicon glyphicon-trash"></span></a>
             </div>
         </div>
     </div>

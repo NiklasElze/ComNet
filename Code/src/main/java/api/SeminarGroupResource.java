@@ -150,6 +150,36 @@ public class SeminarGroupResource {
     }
 
     @GET
+    @Path("/contactlist/group/{id}")
+    @Secured
+    @Produces("application/json")
+    public Response getContactListOfGroup(@PathParam("id") int groupId, @Context SecurityContext securityContext){
+        try {
+            SecurityService.authorizeUser(new Role[] {Role.STUDENT},
+                    ((CustomPrincipal) securityContext.getUserPrincipal()).getAuthorizedUser());
+
+            List<model.SeminarGroup> seminarGroupList = m_SeminarGroupService.getContactListOfGroup(groupId);
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.NO_ERROR))
+                    .entity(JsonService.getListAsJsonArray(seminarGroupList))
+                    .build();
+        } catch (ServiceException serviceException) {
+            ErrorType errorType = serviceException.getErrorType();
+
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(errorType))
+                    .entity(errorType)
+                    .build();
+        } catch (Exception exception) {
+            return Response
+                    .status(StatusCodeService.getStatusByErrorType(ErrorType.INTERNAL_ERROR))
+                    .entity(ErrorType.INTERNAL_ERROR)
+                    .build();
+        }
+    }
+
+    @GET
     @Path("/contactlist/conversation/new")
     @Secured
     @Produces("application/json")

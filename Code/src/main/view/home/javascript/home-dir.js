@@ -1,4 +1,4 @@
-﻿function homeController($scope, titleService, navMenuService) {
+﻿function homeController($scope, titleService, navMenuService, principalService) {
     var that = this;
 
     that.showContent = showContent;
@@ -8,8 +8,8 @@
     function initialize() {
         titleService.setTitle('ComNet | Home');
         $scope.showContent = true;
-        $scope.firstname = 'Niklas';
-        $scope.lastname = 'Elze';
+        $scope.firstname = principalService.getIdentity().firstname;
+        $scope.lastname = principalService.getIdentity().lastname;
 
         navMenuService.setToActive('home');
     }
@@ -29,7 +29,7 @@ function homeDirective() {
             lastname: '=?',
             showContent: '=?'
         },
-        controller: ['$scope', 'titleService', 'navMenuService', homeController],
+        controller: ['$scope', 'titleService', 'navMenuService', 'principalService', homeController],
         controllerAs: 'mainPageCtrl',
         templateUrl: 'home/template/home-template.html'
     }

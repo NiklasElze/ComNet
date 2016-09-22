@@ -24,7 +24,7 @@ function editTopicController($scope, $state, $stateParams, $rootScope, myHttpSer
                     $scope.name = data.name;
                     groupId = data.group.id;
 
-                    $scope.showDelete = true;
+                    $scope.showDelete = $stateParams.userIsAdmin;
                 }, function(error){
                     $scope.showSave = false;
                     showErrorMessage(error);
@@ -79,12 +79,12 @@ function editTopicController($scope, $state, $stateParams, $rootScope, myHttpSer
 
                 $scope.showContent = false;
                 $scope.showSave = false;
-                $scope.showDeleted = false;
+                $scope.showDelete = false;
                 stopLoading();
             }, function (error) {
                 showErrorMessage(error);
                 stopLoading();
-            })
+            });
     }
 
     function startLoading(){

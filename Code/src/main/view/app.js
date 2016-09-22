@@ -192,7 +192,8 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
             roles: [1]
         },
         params:{
-            id: 0
+            id: 0,
+            userIsAdmin: false
         },
         views: {
             'groups-content':{
@@ -207,7 +208,8 @@ function appConfig($stateProvider, $urlRouterProvider, $locationProvider) {
         },
         params:{
             id: 0,
-            groupId: 0
+            groupId: 0,
+            userIsAdmin: false
         },
         views: {
             'groups-content':{
