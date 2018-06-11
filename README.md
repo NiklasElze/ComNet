@@ -18,7 +18,7 @@ Capabilities:
 - Chatting:
   - students can chat with other students
   - group conversations between multiple students or whole student groups possible
-- Creatting groups:
+- Creating groups:
   - students can create groups
   - the creator of a group ("group admin") can add other students and appoint additional admins
   - group admins can delete topics
