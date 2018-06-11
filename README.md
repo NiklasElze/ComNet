@@ -1,2 +1,2 @@
 # ComNet
-Internal communication network designed for educational institutions
+Internal communication network designed for educational institutions (outdated branch)
