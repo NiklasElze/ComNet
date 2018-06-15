@@ -1,4 +1,6 @@
 # ComNet
+(this project was created during my time at unversity)
+
 Internal communication network designed for educational institutions.
 
 Capabilities:
